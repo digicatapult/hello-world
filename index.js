@@ -7,5 +7,5 @@ app.get('/', (request, response) => {
 });
 
 app.listen(port, () => {
-  console.log('Sever running on localhost:%s', port);
+  console.log('Server running on localhost:%s', port);
 });
