@@ -1,0 +1,8 @@
+# NodeJS
+node_modules
+
+# Git
+.github
+
+# Workstation
+.vscode

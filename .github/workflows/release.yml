@@ -1,0 +1,67 @@
+name: Release
+
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  # static-checks-npm:
+  #   uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@main
+  #   with:
+  #     matrix_commands: '["lint", "depcheck", "check", "xss-scan"]'
+  #     node_version: '24'
+
+  # tests-npm:
+  #   uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@main
+  #   with:
+  #     docker_compose_file: ''
+  #     npm_build_command: 'npm run build'
+  #     tests: '["test:unit", "test:integration", "test:ratelimit"]'
+  #     node_version: '24'
+  #     env_vars: |
+  #       {
+  #         "TMPDIR": "${{ github.workspace }}",
+  #         "PUPPETEER_ARGS": "--no-sandbox,--disable-setuid-sandbox"
+  #       }
+
+  # e2e-tests-npm:
+  #   uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@main
+  #   concurrency:
+  #     group: e2e-tests-npm
+  #     cancel-in-progress: true
+  #   with:
+  #     docker_compose_file: ''
+  #     pre_test_command: 'npm ci && npx playwright install-deps && npx playwright install'
+  #     test_command: 'npm run test:playwright || exit 1'
+  #     node_version: '24'
+  #     env_vars: |
+  #       {
+  #         "PUPPETEER_ARGS": "--no-sandbox,--disable-setuid-sandbox"
+  #       }
+  #   permissions:
+  #     contents: write
+  #   secrets: inherit
+
+  build-docker:
+    # needs:
+    #   - e2e-tests-npm
+    #   - tests-npm
+    #   - static-checks-npm
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
+    with:
+      push_dockerhub: true
+      push_ghcr: true
+    permissions:
+      packages: write
+      contents: write
+    secrets:
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+
+  release-github:
+    needs: [build-docker]
+    uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@main
+    permissions:
+      contents: write
+      pull-requests: read
+    secrets: inherit

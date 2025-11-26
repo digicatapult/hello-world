@@ -1,0 +1,58 @@
+name: Lint and test
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # static-checks-npm:
+  #   uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@main
+  #   with:
+  #     matrix_commands: '["lint", "depcheck", "check", "xss-scan"]'
+  #     enable_semgrep_action: true
+  #     enable_trufflehog_action: true
+  #     semgrep_extra_args: '--config="p/default"'
+  #     semgrep_upload_type: "sarif"
+  #     trufflehog_extra_args: "--results=verified,unknown --log-level=2"
+  #     node_version: '24'
+
+  # tests-npm:
+  #   uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@main
+  #   with:
+  #     docker_compose_file: ''
+  #     npm_build_command: 'npm run build'
+  #     tests: '["test:unit", "test:integration", "test:ratelimit"]'
+  #     coverage_config_json: '.c8rc.json'
+  #     node_version: '24'
+  #     env_vars: |
+  #       {
+  #         "TMPDIR": "${{ github.workspace }}",
+  #         "PUPPETEER_ARGS": "--no-sandbox,--disable-setuid-sandbox"
+  #       }
+
+  # e2e-tests-npm:
+  #   uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@main
+  #   concurrency:
+  #     group: e2e-tests-npm
+  #   with:
+  #     docker_compose_file: ''
+  #     node_version: '24'
+  #     pre_test_command: 'npm ci && npx playwright install-deps && npx playwright install'
+  #     test_command: 'npm run test:playwright || exit 1'
+  #     env_vars: |
+  #       {
+  #         "PUPPETEER_ARGS": "--no-sandbox,--disable-setuid-sandbox"
+  #       }
+  #   permissions:
+  #     contents: write
+  #   secrets: inherit
+
+  build-docker:
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
+    permissions:
+      packages: write
+      contents: write

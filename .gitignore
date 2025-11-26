@@ -1,0 +1,6 @@
+# NodeJS
+node_modules
+
+# Workstation
+**/.DS_Store
+.vscode/*
