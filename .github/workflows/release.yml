@@ -62,10 +62,16 @@ jobs:
 
   release-github:
     needs: [build-docker]
-    uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@feature/add_dtrack_project_upload
-    with:
-      enable_dtrack_project: true
+    uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@main
     permissions:
       contents: write
       pull-requests: read
     secrets: inherit
+
+  generate-npm-sbom:
+    needs: [release-github]
+    uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@feature/add_dtrack_project_upload
+    with:
+      enable_check_version: true
+      enable_dtrack_project: true
+      sbom_output_file: ${{ github.event.repository.name }}.dt.json
