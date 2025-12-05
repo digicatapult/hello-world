@@ -71,6 +71,8 @@ jobs:
   generate-npm-sbom:
     needs: [release-github]
     uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@feature/add_dtrack_project_upload
+    permissions:
+      contents: read
     with:
       enable_check_version: true
       enable_dtrack_project: true
