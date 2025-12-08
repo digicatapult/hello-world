@@ -49,14 +49,14 @@ jobs:
     with:
       enable_check_version: true
       enable_dtrack_project: true
-      sbom_output_file: ${{ github.event.repository.name }}.dt.json
+      sbom_output_file: ${{ github.event.repository.name }}.cdx.json
 
   build-docker:
     # needs:
     #   - e2e-tests-npm
     #   - tests-npm
     #   - static-checks-npm
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@feature/add_dtrack_project_upload
     with:
       push_dockerhub: true
       push_ghcr: true
@@ -73,7 +73,9 @@ jobs:
     needs:
       - build-docker
       - generate-sbom-npm
-    uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@feature/add_dtrack_project_upload
+    with:
+      get_sbom: true
     permissions:
       contents: write
       pull-requests: read
