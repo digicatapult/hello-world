@@ -1,6 +1,6 @@
 {
   "name": "hello-world",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "A minimally-useful NPM package",
   "homepage": "https://github.com/digicatapult/hello-world#readme",
   "bugs": {
