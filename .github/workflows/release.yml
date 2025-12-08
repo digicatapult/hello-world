@@ -42,8 +42,8 @@ jobs:
   #     contents: write
   #   secrets: inherit
 
-  generate-npm-sbom:
-    uses: digicatapult/shared-workflows/.github/workflows/generate-npm-sbom.yml@feature/add_dtrack_project_upload
+  generate-sbom-npm:
+    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@feature/add_dtrack_project_upload
     permissions:
       contents: read
     with:
