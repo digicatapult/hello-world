@@ -57,7 +57,7 @@ jobs:
       enable_permissions_monitor: true
 
   build-docker:
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@feature/add_dtrack_project_upload
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@test/use_actions_permissions_monitor
     permissions:
       packages: write
       contents: write
