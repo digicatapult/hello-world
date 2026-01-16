@@ -51,8 +51,8 @@ jobs:
   #     contents: write
   #   secrets: inherit
 
-  scan-secrets:
-    uses: digicatapult/shared-workflows/.github/workflows/scan-secrets.yml@test/use_actions_permissions_monitor
+  check-version:
+    uses: digicatapult/shared-workflows/.github/workflows/check-version.yml@test/use_actions_permissions_monitor
     with:
       enable_permissions_monitor: true
 
