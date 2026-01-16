@@ -53,7 +53,6 @@ jobs:
 
   check-version:
     uses: digicatapult/shared-workflows/.github/workflows/check-version.yml@test/use_actions_permissions_monitor
-    permissions: {}
     with:
       enable_permissions_monitor: true
 
