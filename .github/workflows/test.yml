@@ -51,8 +51,10 @@ jobs:
   #     contents: write
   #   secrets: inherit
 
-  scan-vulns:
-    uses: digicatapult/shared-workflows/.github/workflows/scan-vulns.yml@test/use_actions_permissions_monitor
+  scan-secrets:
+    uses: digicatapult/shared-workflows/.github/workflows/scan-secrets.yml@test/use_actions_permissions_monitor
+    with:
+      enable_permissions_monitor: true
 
   build-docker:
     uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@feature/add_dtrack_project_upload
@@ -61,3 +63,5 @@ jobs:
       contents: write
       security-events: write
       actions: read
+    with:
+      enable_permissions_monitor: true
