@@ -9,6 +9,8 @@ jobs:
     permissions:
       security-events: write
     uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@test/permissions_logic
+    with:
+      matrix_commands: '["start"]'
 
   generate-sbom-npm:
     uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@test/permissions_logic
