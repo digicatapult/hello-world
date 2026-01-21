@@ -31,3 +31,15 @@ jobs:
       packages: write
       security-events: write
     uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@test/permissions_logic
+
+  generate-sbom-npm:
+    permissions: {}
+    needs: [build-docker]
+    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@test/permissions_logic
+    with:
+      enable_check_version: true
+      enable_dtrack_project: true
+      sbom_output_file: ${{ github.event.repository.name }}.cdx.json
+    secrets:
+      DTRACK_APIKEY: ${{ secrets.DTRACK_APIKEY }}
+      DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}

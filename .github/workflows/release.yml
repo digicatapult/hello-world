@@ -12,18 +12,6 @@ jobs:
     with:
       matrix_commands: '["start"]'
 
-  generate-sbom-npm:
-    permissions:
-      contents: read
-    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@test/permissions_logic
-    with:
-      enable_check_version: true
-      enable_dtrack_project: true
-      sbom_output_file: ${{ github.event.repository.name }}.cdx.json
-    secrets:
-      DTRACK_APIKEY: ${{ secrets.DTRACK_APIKEY }}
-      DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
-
   build-docker:
     permissions:
       contents: read
@@ -37,13 +25,16 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.SQNC_DOCKERHUB_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.SQNC_DOCKERHUB_USERNAME }}
 
+  generate-sbom-npm:
+    permissions: {}
+    needs: [build-docker]
+    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@test/permissions_logic
+
   release-github:
     permissions:
       contents: write
       pull-requests: read
-    needs:
-      - build-docker
-      - generate-sbom-npm
+    needs: [build-docker, generate-sbom-npm]
     uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@test/permissions_logic
     with:
       get_sbom: true
