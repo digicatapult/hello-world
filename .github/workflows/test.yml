@@ -9,6 +9,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  check-version:
+    permissions: {}
+    uses: digicatapult/shared-workflows/.github/workflows/check-version.yml@test/permissions_logic
+
   static-checks-npm:
     permissions:
       security-events: write
