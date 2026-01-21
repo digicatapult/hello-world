@@ -26,4 +26,5 @@ jobs:
       trufflehog_extra_args: "--results=verified,unknown --log-level=2"
 
   build-docker:
+    permissions: {}
     uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@test/permissions_logic

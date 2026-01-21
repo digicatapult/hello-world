@@ -13,9 +13,9 @@ jobs:
       matrix_commands: '["start"]'
 
   generate-sbom-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@test/permissions_logic
     permissions:
       contents: read
+    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@test/permissions_logic
     with:
       enable_check_version: true
       enable_dtrack_project: true
@@ -25,26 +25,26 @@ jobs:
       DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
 
   build-docker:
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@test/permissions_logic
-    with:
-      push_dockerhub: true
-      push_ghcr: true
     permissions:
       contents: read
       packages: write
       security-events: write
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@test/permissions_logic
+    with:
+      push_dockerhub: true
+      push_ghcr: true
     secrets:
       DOCKERHUB_TOKEN: ${{ secrets.SQNC_DOCKERHUB_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.SQNC_DOCKERHUB_USERNAME }}
 
   release-github:
+    permissions:
+      contents: write
+      pull-requests: read
     needs:
       - build-docker
       - generate-sbom-npm
     uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@test/permissions_logic
     with:
       get_sbom: true
-    permissions:
-      contents: write
-      pull-requests: read
     secrets: inherit
