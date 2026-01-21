@@ -30,6 +30,7 @@ jobs:
     permissions:
       pull-requests: write
     with:
+      coverage: false
       docker_compose_file: ''
       npm_build_command: 'npm run start'
       tests: '["test:init"]'
