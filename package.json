@@ -1,6 +1,6 @@
 {
   "name": "hello-world",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A minimally-useful NPM package",
   "homepage": "https://github.com/digicatapult/hello-world#readme",
   "bugs": {
@@ -15,7 +15,8 @@
   "type": "commonjs",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "test:init": "node src/index.js"
   },
   "dependencies": {
     "express": "^5.1.0"

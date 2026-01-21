@@ -6,18 +6,27 @@ on:
 
 jobs:
   static-checks-npm:
+    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@test/permissions_logic
     permissions:
       security-events: write
-    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@test/permissions_logic
     with:
       matrix_commands: '["start"]'
 
+  tests-npm:
+    uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@test/permissions_logic
+    permissions:
+      pull-requests: write
+    with:
+      docker_compose_file: ''
+      npm_build_command: 'npm run start'
+      tests: '["test:init"]'
+
   build-docker:
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@test/permissions_logic
     permissions:
       contents: read
       packages: write
       security-events: write
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@test/permissions_logic
     with:
       push_dockerhub: true
       push_ghcr: true
@@ -26,16 +35,16 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.SQNC_DOCKERHUB_USERNAME }}
 
   generate-sbom-npm:
+    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@test/permissions_logic
     permissions: {}
     needs: [build-docker]
-    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@test/permissions_logic
 
   release-github:
+    uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@test/permissions_logic
     permissions:
       contents: write
       pull-requests: read
     needs: [build-docker, generate-sbom-npm]
-    uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@test/permissions_logic
     with:
       get_sbom: true
     secrets: inherit

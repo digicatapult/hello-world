@@ -10,13 +10,13 @@ concurrency:
 
 jobs:
   check-version:
-    permissions: {}
     uses: digicatapult/shared-workflows/.github/workflows/check-version.yml@test/permissions_logic
+    permissions: {}
 
   static-checks-npm:
+    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@test/permissions_logic
     permissions:
       security-events: write
-    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@test/permissions_logic
     with:
       matrix_commands: '["start"]'
       enable_semgrep_action: true
@@ -25,17 +25,26 @@ jobs:
       semgrep_upload_type: "sarif"
       trufflehog_extra_args: "--results=verified,unknown --log-level=2"
 
+  tests-npm:
+    uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@test/permissions_logic
+    permissions:
+      pull-requests: write
+    with:
+      docker_compose_file: ''
+      npm_build_command: 'npm run start'
+      tests: '["test:init"]'
+
   build-docker:
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@test/permissions_logic
     permissions:
       contents: read
       packages: write
       security-events: write
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@test/permissions_logic
 
   generate-sbom-npm:
+    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@test/permissions_logic
     permissions: {}
     needs: [build-docker]
-    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@test/permissions_logic
     with:
       enable_check_version: true
       enable_dtrack_project: true
