@@ -1,6 +1,6 @@
 {
   "name": "hello-world",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "description": "A minimally-useful NPM package",
   "homepage": "https://github.com/digicatapult/hello-world#readme",
   "bugs": {
@@ -15,8 +15,8 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index"
+    "start": "node index",
+    "stop": "pkill --signal SIGINT hello-world"
   },
   "dependencies": {
     "express": "^5.1.0"
