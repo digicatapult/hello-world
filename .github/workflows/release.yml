@@ -5,80 +5,55 @@ on:
     branches: ['main']
 
 jobs:
-  # static-checks-npm:
-  #   uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@main
-  #   with:
-  #     matrix_commands: '["lint", "depcheck", "check", "xss-scan"]'
-  #     node_version: '24'
+  static-checks-npm:
+    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@test/permissions_logic
+    permissions:
+      security-events: write
+    with:
+      matrix_commands: '["start"]'
 
-  # tests-npm:
-  #   uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@main
-  #   with:
-  #     docker_compose_file: ''
-  #     npm_build_command: 'npm run build'
-  #     tests: '["test:unit", "test:integration", "test:ratelimit"]'
-  #     node_version: '24'
-  #     env_vars: |
-  #       {
-  #         "TMPDIR": "${{ github.workspace }}",
-  #         "PUPPETEER_ARGS": "--no-sandbox,--disable-setuid-sandbox"
-  #       }
+  tests-npm:
+    uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@test/permissions_logic
+    permissions:
+      pull-requests: write
+    with:
+      docker_compose_file: ''
+      npm_build_command: 'npm run start'
+      tests: '["test:init"]'
 
-  # e2e-tests-npm:
-  #   uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@main
-  #   concurrency:
-  #     group: e2e-tests-npm
-  #     cancel-in-progress: true
-  #   with:
-  #     docker_compose_file: ''
-  #     pre_test_command: 'npm ci && npx playwright install-deps && npx playwright install'
-  #     test_command: 'npm run test:playwright || exit 1'
-  #     node_version: '24'
-  #     env_vars: |
-  #       {
-  #         "PUPPETEER_ARGS": "--no-sandbox,--disable-setuid-sandbox"
-  #       }
-  #   permissions:
-  #     contents: write
-  #   secrets: inherit
+  tests-e2e-npm:
+    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@test/permissions_logic
+    permissions: {}
+    with:
+      docker_compose_file: ''
+      pre_test_command: 'npm ci && npx playwright install-deps && npx playwright install'
+      test_command: 'npm run test:playwright || exit 1'
 
-  generate-sbom-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@feature/add_dtrack_project_upload
+  build-docker:
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@test/permissions_logic
+    needs: [static-checks-npm, tests-npm, tests-e2e-npm]
     permissions:
       contents: read
-    with:
-      enable_check_version: true
-      enable_dtrack_project: true
-      sbom_output_file: ${{ github.event.repository.name }}.cdx.json
-    secrets:
-      DTRACK_APIKEY: ${{ secrets.DTRACK_APIKEY }}
-      DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
-  build-docker:
-    # needs:
-    #   - e2e-tests-npm
-    #   - tests-npm
-    #   - static-checks-npm
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@feature/add_dtrack_project_upload
+      packages: write
+      security-events: write
     with:
       push_dockerhub: true
       push_ghcr: true
-    permissions:
-      packages: write
-      contents: write
-      security-events: write
-      actions: read
     secrets:
       DOCKERHUB_TOKEN: ${{ secrets.SQNC_DOCKERHUB_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.SQNC_DOCKERHUB_USERNAME }}
 
+  generate-sbom-npm:
+    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@test/permissions_logic
+    permissions: {}
+    needs: [build-docker]
+
   release-github:
-    needs:
-      - build-docker
-      - generate-sbom-npm
-    uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@feature/add_dtrack_project_upload
-    with:
-      get_sbom: true
+    uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@test/permissions_logic
     permissions:
       contents: write
       pull-requests: read
+    needs: [build-docker, generate-sbom-npm]
+    with:
+      get_sbom: true
     secrets: inherit

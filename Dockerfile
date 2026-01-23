@@ -3,10 +3,10 @@ FROM node:24-trixie-slim AS service
 
 RUN apt-get update && apt-get upgrade -y
 
-WORKDIR /app
+WORKDIR /
 
 COPY package.json ./
-COPY index.js ./
+COPY src/index.js ./
 
 RUN npm install
 
