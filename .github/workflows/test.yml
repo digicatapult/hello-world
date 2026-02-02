@@ -50,6 +50,11 @@ jobs:
       contents: read
       packages: write
       security-events: write
+    with:
+      pull_dhi: true
+    secrets:
+      DOCKERHUB_TOKEN: ${{ secrets.SQNC_DOCKERHUB_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.SQNC_DOCKERHUB_USERNAME }}
 
   generate-sbom-npm:
     uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@test/permissions_logic
