@@ -1,8 +1,8 @@
 name: Lint and test
 
 on:
-  pull_request:
-    types: [opened, reopened, synchronize]
+  push:
+    branches-ignore: ["main"]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -31,20 +31,20 @@ jobs:
       pull-requests: write
     with:
       coverage: false
-      docker_compose_file: ''
-      npm_build_command: 'npm run start'
+      docker_compose_file: ""
+      npm_build_command: "npm run start"
       tests: '["test:init"]'
 
   tests-e2e-npm:
     uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@test/permissions_logic
     permissions: {}
     with:
-      docker_compose_file: ''
-      pre_test_command: 'npm ci && npx playwright install-deps && npx playwright install'
-      test_command: 'npm run test:playwright || exit 1'
+      docker_compose_file: ""
+      pre_test_command: "npm ci && npx playwright install-deps && npx playwright install"
+      test_command: "npm run test:playwright || exit 1"
 
   build-docker:
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@test/permissions_logic
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@feat/dhi-pull
     needs: [static-checks-npm, tests-npm, tests-e2e-npm]
     permissions:
       contents: read
