@@ -1,8 +1,8 @@
 name: Lint and test
 
 on:
-  pull_request:
-    types: [opened, reopened, synchronize]
+  push:
+    branches-ignore: ["main"]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -10,11 +10,11 @@ concurrency:
 
 jobs:
   check-version:
-    uses: digicatapult/shared-workflows/.github/workflows/check-version.yml@test/permissions_logic
+    uses: digicatapult/shared-workflows/.github/workflows/check-version.yml@chore/remove-permissions
     permissions: {}
 
   static-checks-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@test/permissions_logic
+    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@chore/remove-permissions
     permissions:
       security-events: write
     with:
@@ -26,25 +26,25 @@ jobs:
       trufflehog_extra_args: "--results=verified,unknown --log-level=2"
 
   tests-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@test/permissions_logic
+    uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@chore/remove-permissions
     permissions:
       pull-requests: write
     with:
       coverage: false
-      docker_compose_file: ''
-      npm_build_command: 'npm run start'
+      docker_compose_file: ""
+      npm_build_command: "npm run start"
       tests: '["test:init"]'
 
   tests-e2e-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@test/permissions_logic
+    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@chore/remove-permissions
     permissions: {}
     with:
-      docker_compose_file: ''
-      pre_test_command: 'npm ci && npx playwright install-deps && npx playwright install'
-      test_command: 'npm run test:playwright || exit 1'
+      docker_compose_file: ""
+      pre_test_command: "npm ci && npx playwright install-deps && npx playwright install"
+      test_command: "npm run test:playwright || exit 1"
 
   build-docker:
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@test/permissions_logic
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@chore/remove-permissions
     needs: [static-checks-npm, tests-npm, tests-e2e-npm]
     permissions:
       contents: read
@@ -52,7 +52,7 @@ jobs:
       security-events: write
 
   generate-sbom-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@test/permissions_logic
+    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@chore/remove-permissions
     permissions: {}
     needs: [build-docker]
     with:
