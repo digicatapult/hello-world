@@ -10,11 +10,11 @@ concurrency:
 
 jobs:
   check-version:
-    uses: digicatapult/shared-workflows/.github/workflows/check-version.yml@chore/remove-permissions
+    uses: digicatapult/shared-workflows/.github/workflows/check-version.yml@feat/ghcr-pull
     permissions: {}
 
   static-checks-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@chore/remove-permissions
+    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@feat/ghcr-pull
     permissions:
       security-events: write
     with:
@@ -26,7 +26,7 @@ jobs:
       trufflehog_extra_args: "--results=verified,unknown --log-level=2"
 
   tests-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@chore/remove-permissions
+    uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@feat/ghcr-pull
     permissions:
       pull-requests: write
     with:
@@ -36,7 +36,7 @@ jobs:
       tests: '["test:init"]'
 
   tests-e2e-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@chore/remove-permissions
+    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@feat/ghcr-pull
     permissions: {}
     with:
       docker_compose_file: ""
@@ -44,7 +44,7 @@ jobs:
       test_command: "npm run test:playwright || exit 1"
 
   build-docker:
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@chore/remove-permissions
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@feat/ghcr-pull
     needs: [static-checks-npm, tests-npm, tests-e2e-npm]
     permissions:
       contents: read
@@ -52,7 +52,7 @@ jobs:
       security-events: write
 
   generate-sbom-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@chore/remove-permissions
+    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@feat/ghcr-pull
     permissions: {}
     needs: [build-docker]
     with:
