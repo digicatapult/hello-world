@@ -44,7 +44,7 @@ jobs:
       test_command: 'npm run test:playwright || exit 1'
 
   build-docker:
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@test/permissions_logic
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@bug/give_docker_scout_access
     needs: [static-checks-npm, tests-npm, tests-e2e-npm]
     permissions:
       contents: read
