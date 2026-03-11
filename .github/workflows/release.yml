@@ -6,14 +6,14 @@ on:
 
 jobs:
   static-checks-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@test/permissions_logic
+    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@renovate/major-github-artifact-actions
     permissions:
       security-events: write
     with:
       matrix_commands: '["start"]'
 
   tests-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@test/permissions_logic
+    uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@renovate/major-github-artifact-actions
     permissions:
       pull-requests: write
     with:
@@ -22,7 +22,7 @@ jobs:
       tests: '["test:init"]'
 
   tests-e2e-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@test/permissions_logic
+    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@renovate/major-github-artifact-actions
     permissions: {}
     with:
       docker_compose_file: ''
@@ -30,7 +30,7 @@ jobs:
       test_command: 'npm run test:playwright || exit 1'
 
   build-docker:
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@bug/give_docker_scout_access
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@renovate/major-github-artifact-actions
     needs: [static-checks-npm, tests-npm, tests-e2e-npm]
     permissions:
       contents: read
@@ -44,12 +44,12 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.SQNC_DOCKERHUB_USERNAME }}
 
   generate-sbom-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@test/permissions_logic
+    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@renovate/major-github-artifact-actions
     permissions: {}
     needs: [build-docker]
 
   release-github:
-    uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@test/permissions_logic
+    uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@renovate/major-github-artifact-actions
     permissions:
       contents: write
       pull-requests: read
