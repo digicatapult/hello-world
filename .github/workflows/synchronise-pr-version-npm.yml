@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   synchronise-pr-version-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/synchronise-pr-version-npm.yml@test/permissions_logic
+    uses: digicatapult/shared-workflows/.github/workflows/synchronise-pr-version-npm.yml@renovate/major-github-artifact-actions
     with:
       pr-number: ${{ github.event.pull_request.number }}
       trunk-branch: 'main'
