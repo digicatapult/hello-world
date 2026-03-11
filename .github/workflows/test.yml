@@ -10,11 +10,11 @@ concurrency:
 
 jobs:
   check-version:
-    uses: digicatapult/shared-workflows/.github/workflows/check-version.yml@renovate/major-github-artifact-actions
+    uses: digicatapult/shared-workflows/.github/workflows/check-version.yml@renovate/major-github-actions-updates
     permissions: {}
 
   static-checks-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@renovate/major-github-artifact-actions
+    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@renovate/major-github-actions-updates
     permissions:
       security-events: write
     with:
@@ -26,7 +26,7 @@ jobs:
       trufflehog_extra_args: "--results=verified,unknown --log-level=2"
 
   tests-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@renovate/major-github-artifact-actions
+    uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@renovate/major-github-actions-updates
     permissions:
       pull-requests: write
     with:
@@ -36,7 +36,7 @@ jobs:
       tests: '["test:init"]'
 
   tests-e2e-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@renovate/major-github-artifact-actions
+    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@renovate/major-github-actions-updates
     permissions: {}
     with:
       docker_compose_file: ''
@@ -44,7 +44,7 @@ jobs:
       test_command: 'npm run test:playwright || exit 1'
 
   build-docker:
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@renovate/major-github-artifact-actions
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@renovate/major-github-actions-updates
     needs: [static-checks-npm, tests-npm, tests-e2e-npm]
     permissions:
       contents: read
@@ -52,7 +52,7 @@ jobs:
       security-events: write
 
   generate-sbom-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@renovate/major-github-artifact-actions
+    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@renovate/major-github-actions-updates
     permissions: {}
     needs: [build-docker]
     with:
