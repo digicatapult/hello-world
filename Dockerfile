@@ -16,6 +16,12 @@ COPY index.py ./
 RUN poetry config virtualenvs.create false \
 	&& poetry install --only main --no-interaction --no-ansi --no-root
 
+RUN addgroup --system app \
+	&& adduser --system --ingroup app app \
+	&& chown -R app:app /app
+
 EXPOSE 3001
+
+USER app
 
 CMD ["python", "index.py"]
