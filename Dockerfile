@@ -1,15 +1,21 @@
 # syntax=docker/dockerfile:1.20
-FROM node:24-trixie-slim AS service
+FROM python:3.12-slim AS service
 
-RUN apt-get update && apt-get upgrade -y
+ENV POETRY_VERSION=2.3.1
 
-WORKDIR /
+RUN apt-get update && apt-get upgrade -y \
+	&& pip install --no-cache-dir "poetry==${POETRY_VERSION}" \
+	&& rm -rf /var/lib/apt/lists/*
 
-COPY package.json ./
-COPY src/index.js ./
+WORKDIR /app
 
-RUN npm install
+COPY pyproject.toml poetry.lock README.md ./
+COPY hello_world ./hello_world
+COPY index.py ./
 
-EXPOSE 3000
+RUN poetry config virtualenvs.create false \
+	&& poetry install --only main --no-interaction --no-ansi --no-root
 
-CMD ["node", "index.js"]
+EXPOSE 3001
+
+CMD ["python", "index.py"]

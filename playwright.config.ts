@@ -1,5 +1,13 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const e2eTarget = process.env.E2E_TARGET ?? 'python';
+const isNodeTarget = e2eTarget === 'node';
+const port = isNodeTarget ? 3000 : 3001;
+const baseURL = `http://localhost:${port}`;
+const webServerCommand = isNodeTarget
+  ? 'npm start'
+  : 'PORT=3001 poetry run python index.py';
+
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
@@ -11,12 +19,12 @@ export default defineConfig({
     ['list', {}],
   ],
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL,
     trace: 'on-first-retry',
   },
   webServer: {
-    command: 'npm start',
-    url: 'http://localhost:3000',
+    command: webServerCommand,
+    url: baseURL,
     reuseExistingServer: !process.env.CI,
     stdout: 'ignore',
     stderr: 'pipe',

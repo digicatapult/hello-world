@@ -1,8 +1,12 @@
 name: Lint and test
 
 on:
+  push:
+    branches:
+      - "**"
   pull_request:
     types: [opened, reopened, synchronize]
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -10,11 +14,11 @@ concurrency:
 
 jobs:
   check-version:
-    uses: digicatapult/shared-workflows/.github/workflows/check-version.yml@renovate/major-github-actions-updates
+    uses: digicatapult/shared-workflows/.github/workflows/check-version.yml@feat/python-shared-workflows
     permissions: {}
 
   static-checks-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@renovate/major-github-actions-updates
+    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@feat/python-shared-workflows
     permissions:
       security-events: write
     with:
@@ -26,7 +30,7 @@ jobs:
       trufflehog_extra_args: "--results=verified,unknown --log-level=2"
 
   tests-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@renovate/major-github-actions-updates
+    uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@feat/python-shared-workflows
     permissions:
       pull-requests: write
     with:
@@ -36,29 +40,78 @@ jobs:
       tests: '["test:init"]'
 
   tests-e2e-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@renovate/major-github-actions-updates
+    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@feat/python-shared-workflows
     permissions: {}
     with:
       docker_compose_file: ''
       pre_test_command: 'npm ci && npx playwright install-deps && npx playwright install'
-      test_command: 'npm run test:playwright || exit 1'
+      test_command: 'E2E_TARGET=node npm run test:playwright || exit 1'
+
+  static-checks-poetry:
+    uses: digicatapult/shared-workflows/.github/workflows/static-checks-poetry.yml@feat/python-shared-workflows
+    permissions:
+      security-events: write
+      contents: read
+      actions: read
+    with:
+      matrix_commands: '["pylint", "black", "ruff", "mypy", "bandit"]'
+      pylint_targets: "hello_world index.py tests"
+      mypy_targets: "hello_world/"
+      bandit_targets: "hello_world"
+      enable_semgrep_action: true
+      enable_trufflehog_action: true
+      semgrep_extra_args: '--config="p/default"'
+      semgrep_upload_type: "sarif"
+      trufflehog_extra_args: "--results=verified,unknown --log-level=2"
+
+  tests-poetry:
+    uses: digicatapult/shared-workflows/.github/workflows/tests-poetry.yml@feat/python-shared-workflows
+    permissions:
+      contents: read
+    with:
+      coverage: true
+      docker_compose_file: ''
+      tests: '["tests/unit"]'
+
+  tests-e2e-poetry:
+    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-poetry.yml@feat/python-shared-workflows
+    permissions:
+      contents: read
+    with:
+      docker_compose_file: ''
+      setup_node: true
+      pre_test_command: 'npm ci && npx playwright install-deps && npx playwright install'
+      test_command: 'E2E_TARGET=python npm run test:playwright'
 
   build-docker:
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@renovate/major-github-actions-updates
-    needs: [static-checks-npm, tests-npm, tests-e2e-npm]
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@feat/python-shared-workflows
+    needs: [static-checks-npm, tests-npm, tests-e2e-npm, static-checks-poetry, tests-poetry, tests-e2e-poetry]
     permissions:
       contents: read
       packages: write
       security-events: write
 
   generate-sbom-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@renovate/major-github-actions-updates
+    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@feat/python-shared-workflows
     permissions: {}
     needs: [build-docker]
     with:
       enable_check_version: true
       enable_dtrack_project: true
       sbom_output_file: ${{ github.event.repository.name }}.cdx.json
+    secrets:
+      DTRACK_APIKEY: ${{ secrets.DTRACK_APIKEY }}
+      DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
+
+  generate-sbom-poetry:
+    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-poetry.yml@feat/python-shared-workflows
+    permissions: {}
+    needs: [build-docker]
+    with:
+      enable_check_version: true
+      enable_dtrack_project: true
+      sbom_output_file: ${{ github.event.repository.name }}.cdx.json
+      poetry_install: true
     secrets:
       DTRACK_APIKEY: ${{ secrets.DTRACK_APIKEY }}
       DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
