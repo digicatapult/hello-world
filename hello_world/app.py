@@ -6,13 +6,13 @@ from fastapi import FastAPI
 
 
 def create_app() -> FastAPI:
-    app = FastAPI()
+    api = FastAPI()
 
-    @app.get("/")
+    @api.get("/")
     def root() -> dict[str, str]:
         return {"message": "hello world"}
 
-    return app
+    return api
 
 
 app = create_app()
