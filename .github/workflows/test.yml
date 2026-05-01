@@ -54,10 +54,7 @@ jobs:
       contents: read
       actions: read
     with:
-      matrix_commands: '["pylint", "black", "ruff", "mypy", "bandit"]'
-      pylint_targets: "hello_world index.py tests"
-      mypy_targets: "hello_world/"
-      bandit_targets: "hello_world"
+      matrix_commands: '["pylint hello_world index.py tests", "black --check .", "ruff check .", "mypy hello_world/", "bandit -r hello_world"]'
       enable_semgrep_action: true
       enable_trufflehog_action: true
       semgrep_extra_args: '--config="p/default"'
@@ -116,14 +113,15 @@ jobs:
       DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
 
   generate-sbom-poetry:
-    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-poetry.yml@feat/python-shared-workflows
+    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@feat/python-shared-workflows
     permissions: {}
     needs: [build-docker-poetry]
     with:
+      package_manager: poetry
+      sbom_tool: "@cyclonedx/cdxgen"
       enable_check_version: true
       enable_dtrack_project: true
       sbom_output_file: ${{ github.event.repository.name }}.cdx.json
-      poetry_install: true
     secrets:
       DTRACK_APIKEY: ${{ secrets.DTRACK_APIKEY }}
       DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
