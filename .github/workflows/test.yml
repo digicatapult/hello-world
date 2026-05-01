@@ -119,6 +119,7 @@ jobs:
     with:
       package_manager: poetry
       sbom_tool: "@cyclonedx/cdxgen"
+      additional_args: "--spec-version 1.5"
       enable_check_version: true
       enable_dtrack_project: true
       sbom_output_file: ${{ github.event.repository.name }}-poetry.cdx.json
