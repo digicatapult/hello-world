@@ -83,18 +83,30 @@ jobs:
       pre_test_command: 'npm ci && npx playwright install-deps && npx playwright install'
       test_command: 'E2E_TARGET=python npm run test:playwright'
 
-  build-docker:
+  build-docker-npm:
     uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@feat/python-shared-workflows
-    needs: [static-checks-npm, tests-npm, tests-e2e-npm, static-checks-poetry, tests-poetry, tests-e2e-poetry]
+    needs: [static-checks-npm, tests-npm, tests-e2e-npm]
     permissions:
       contents: read
       packages: write
       security-events: write
+    with:
+      docker_file: Dockerfile
+
+  build-docker-poetry:
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@feat/python-shared-workflows
+    needs: [static-checks-poetry, tests-poetry, tests-e2e-poetry]
+    permissions:
+      contents: read
+      packages: write
+      security-events: write
+    with:
+      docker_file: Dockerfile.poetry
 
   generate-sbom-npm:
     uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@feat/python-shared-workflows
     permissions: {}
-    needs: [build-docker]
+    needs: [build-docker-npm]
     with:
       enable_check_version: true
       enable_dtrack_project: true
@@ -106,7 +118,7 @@ jobs:
   generate-sbom-poetry:
     uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-poetry.yml@feat/python-shared-workflows
     permissions: {}
-    needs: [build-docker]
+    needs: [build-docker-poetry]
     with:
       enable_check_version: true
       enable_dtrack_project: true
