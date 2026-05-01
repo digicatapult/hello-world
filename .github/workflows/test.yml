@@ -101,19 +101,19 @@ jobs:
       docker_file: Dockerfile.poetry
 
   generate-sbom-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@feat/python-shared-workflows
+    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@feat/python-shared-workflows
     permissions: {}
     needs: [build-docker-npm]
     with:
       enable_check_version: true
       enable_dtrack_project: true
-      sbom_output_file: ${{ github.event.repository.name }}.cdx.json
+      sbom_output_file: ${{ github.event.repository.name }}-npm.cdx.json
     secrets:
       DTRACK_APIKEY: ${{ secrets.DTRACK_APIKEY }}
       DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
 
   generate-sbom-poetry:
-    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom-npm.yml@feat/python-shared-workflows
+    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@feat/python-shared-workflows
     permissions: {}
     needs: [build-docker-poetry]
     with:
@@ -121,7 +121,7 @@ jobs:
       sbom_tool: "@cyclonedx/cdxgen"
       enable_check_version: true
       enable_dtrack_project: true
-      sbom_output_file: ${{ github.event.repository.name }}.cdx.json
+      sbom_output_file: ${{ github.event.repository.name }}-poetry.cdx.json
     secrets:
       DTRACK_APIKEY: ${{ secrets.DTRACK_APIKEY }}
       DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
