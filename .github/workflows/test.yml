@@ -1,9 +1,6 @@
 name: Lint and test
 
 on:
-  push:
-    branches:
-      - "**"
   pull_request:
     types: [opened, reopened, synchronize]
   workflow_dispatch:
@@ -66,7 +63,7 @@ jobs:
     permissions:
       contents: read
     with:
-      coverage: false
+      coverage: true
       docker_compose_file: ''
       tests: '["tests/unit"]'
 
