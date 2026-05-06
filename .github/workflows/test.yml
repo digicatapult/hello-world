@@ -11,11 +11,11 @@ concurrency:
 
 jobs:
   check-version:
-    uses: digicatapult/shared-workflows/.github/workflows/check-version.yml@feat/python-shared-workflows
+    uses: digicatapult/shared-workflows/.github/workflows/check-version.yml@main
     permissions: {}
 
   static-checks-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@feat/python-shared-workflows
+    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@main
     permissions:
       security-events: write
     with:
@@ -27,7 +27,7 @@ jobs:
       trufflehog_extra_args: "--results=verified,unknown --log-level=2"
 
   tests-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@feat/python-shared-workflows
+    uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@main
     permissions:
       pull-requests: write
     with:
@@ -37,7 +37,7 @@ jobs:
       tests: '["test:init"]'
 
   tests-e2e-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@feat/python-shared-workflows
+    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@main
     permissions: {}
     with:
       docker_compose_file: ''
@@ -45,7 +45,7 @@ jobs:
       test_command: 'E2E_TARGET=node npm run test:playwright || exit 1'
 
   static-checks-poetry:
-    uses: digicatapult/shared-workflows/.github/workflows/static-checks-poetry.yml@feat/python-shared-workflows
+    uses: digicatapult/shared-workflows/.github/workflows/static-checks-poetry.yml@main
     permissions:
       security-events: write
       contents: read
@@ -59,7 +59,7 @@ jobs:
       trufflehog_extra_args: "--results=verified,unknown --log-level=2"
 
   tests-poetry:
-    uses: digicatapult/shared-workflows/.github/workflows/tests-poetry.yml@feat/python-shared-workflows
+    uses: digicatapult/shared-workflows/.github/workflows/tests-poetry.yml@main
     permissions:
       contents: read
     with:
@@ -68,7 +68,7 @@ jobs:
       tests: '["tests/unit"]'
 
   tests-e2e-poetry:
-    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-poetry.yml@feat/python-shared-workflows
+    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-poetry.yml@main
     permissions:
       contents: read
     with:
@@ -78,7 +78,7 @@ jobs:
       test_command: 'E2E_TARGET=python npm run test:playwright'
 
   build-docker-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@feat/python-shared-workflows
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
     needs: [static-checks-npm, tests-npm, tests-e2e-npm]
     permissions:
       contents: read
@@ -88,7 +88,7 @@ jobs:
       docker_file: Dockerfile
 
   build-docker-poetry:
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@feat/python-shared-workflows
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
     needs: [static-checks-poetry, tests-poetry, tests-e2e-poetry]
     permissions:
       contents: read
@@ -98,7 +98,7 @@ jobs:
       docker_file: Dockerfile.poetry
 
   generate-sbom-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@feat/python-shared-workflows
+    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@main
     permissions: {}
     needs: [build-docker-npm]
     with:
@@ -110,7 +110,7 @@ jobs:
       DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
 
   generate-sbom-poetry:
-    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@feat/python-shared-workflows
+    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@main
     permissions: {}
     needs: [build-docker-poetry]
     with:
