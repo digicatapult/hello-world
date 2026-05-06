@@ -63,7 +63,7 @@ jobs:
     permissions:
       contents: read
     with:
-      coverage: true
+      coverage: false
       docker_compose_file: ''
       tests: '["tests/unit"]'
 
