@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   synchronise-trunk-version-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/synchronise-trunk-version-npm.yml@renovate/major-github-actions-updates
+    uses: digicatapult/shared-workflows/.github/workflows/synchronise-trunk-version-npm.yml@main
     with:
       trunk-branch: "main"
     secrets:
