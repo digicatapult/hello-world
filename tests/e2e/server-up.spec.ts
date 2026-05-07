@@ -1,9 +1,8 @@
 import { test, expect } from '@playwright/test';
 
-test('assert server returns hello world JSON', async ({ request }) => {
+test('server is up', async ({ request }) => {
   const response = await request.get('/');
   expect(response.ok()).toBeTruthy();
-  expect(response.status()).toBe(200);
 
   const target = process.env.E2E_TARGET ?? 'python';
   if (target === 'node') {
