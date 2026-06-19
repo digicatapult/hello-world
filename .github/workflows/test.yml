@@ -36,14 +36,6 @@ jobs:
       npm_build_command: 'npm run start'
       tests: '["test:init"]'
 
-  tests-e2e-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@main
-    permissions: {}
-    with:
-      docker_compose_file: ''
-      pre_test_command: 'npm ci && npx playwright install-deps && npx playwright install'
-      test_command: 'E2E_TARGET=node npm run test:playwright || exit 1'
-
   static-checks-poetry:
     uses: digicatapult/shared-workflows/.github/workflows/static-checks-poetry.yml@main
     permissions:
@@ -67,7 +59,7 @@ jobs:
       docker_compose_file: ''
       tests: '["tests/unit"]'
 
-  tests-e2e-poetry:
+  tests-e2e:
     uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-poetry.yml@main
     permissions:
       contents: read
@@ -75,11 +67,11 @@ jobs:
       docker_compose_file: ''
       setup_node: true
       pre_test_command: 'npm ci && npx playwright install-deps && npx playwright install'
-      test_command: 'E2E_TARGET=python npm run test:playwright'
+      test_command: 'E2E_TARGET=node npm run test:playwright && E2E_TARGET=python npm run test:playwright'
 
   build-docker-npm:
     uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
-    needs: [static-checks-npm, tests-npm, tests-e2e-npm]
+    needs: [static-checks-npm, tests-npm, tests-e2e]
     permissions:
       contents: read
       packages: write
@@ -89,7 +81,7 @@ jobs:
 
   build-docker-poetry:
     uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
-    needs: [static-checks-poetry, tests-poetry, tests-e2e-poetry]
+    needs: [static-checks-poetry, tests-poetry, tests-e2e]
     permissions:
       contents: read
       packages: write
