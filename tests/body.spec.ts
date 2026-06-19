@@ -5,7 +5,7 @@ test('assert server returns hello world JSON', async ({ request }) => {
   expect(response.ok()).toBeTruthy();
   expect(response.status()).toBe(200);
 
-  const target = process.env.E2E_TARGET ?? 'python';
+  const target = process.env.E2E_TARGET;
   if (target === 'node') {
     const bodyText = await response.text();
     expect(bodyText).toBe('Hello world!');

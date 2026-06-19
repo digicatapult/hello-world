@@ -4,7 +4,7 @@ test('server is up', async ({ request }) => {
   const response = await request.get('/');
   expect(response.ok()).toBeTruthy();
 
-  const target = process.env.E2E_TARGET ?? 'python';
+  const target = process.env.E2E_TARGET;
   if (target === 'node') {
     const bodyText = await response.text();
     expect(bodyText).toBe('Hello world!');
