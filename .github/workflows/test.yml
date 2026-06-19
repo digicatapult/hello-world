@@ -38,6 +38,7 @@ jobs:
 
   tests-e2e:
     uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-poetry.yml@main
+    needs: [tests-poetry, tests-npm]
     permissions:
       contents: read
     with:
