@@ -60,13 +60,14 @@ jobs:
       tests: '["tests/unit"]'
 
   tests-e2e:
-    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-poetry.yml@main
     permissions:
       contents: read
     with:
       docker_compose_file: ''
+      setup_node: true
       pre_test_command: 'npm ci && npx playwright install-deps && npx playwright install'
-      test_command: 'E2E_TARGET=node npm run test:playwright'
+      test_command: 'E2E_TARGET=node npm run test:playwright && E2E_TARGET=python npm run test:playwright'
 
   build-docker-npm:
     uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
