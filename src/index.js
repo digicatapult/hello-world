@@ -1,7 +1,12 @@
 const express = require('express');
 const app = express();
 const port = 3000;
-const timeout = process.env.SERVER_TIMEOUT !== undefined ? Number(process.env.SERVER_TIMEOUT) : 10000;
+const timeout = (() => {
+  const raw = process.env.SERVER_TIMEOUT;
+  if (raw === undefined || raw.trim() === '') return 10000;
+  const n = Number(raw);
+  return Number.isFinite(n) && n >= 0 ? n : 10000;
+})();
 
 app.get('/', (request, response) => {
   response.send("Hello world!");
