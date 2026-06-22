@@ -79,6 +79,7 @@ jobs:
 
   scan-zap:
     uses: digicatapult/shared-workflows/.github/workflows/scan-zap.yml@feature/add_zap_proxy_scan
+    needs: [tests-npm]
     permissions:
       contents: read
     with:
