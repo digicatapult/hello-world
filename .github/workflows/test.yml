@@ -83,7 +83,9 @@ jobs:
     permissions:
       contents: read
     with:
+      matrix_scans: '["baseline"]'
       docker_compose_file: ''
+      pre_scan_command: 'npm run start'
       target: "http://localhost:3000"
 
   build-docker-npm:
