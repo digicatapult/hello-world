@@ -77,6 +77,14 @@ jobs:
       pre_test_command: 'npm ci && npx playwright install-deps && npx playwright install'
       test_command: 'E2E_TARGET=python npm run test:playwright'
 
+  scan-zap:
+    uses: digicatapult/shared-workflows/.github/workflows/scan-zap.yml@feature/add_zap_proxy_scan
+    permissions:
+      contents: read
+    with:
+      docker_compose_file: ''
+      target: "http://localhost:3000"
+
   build-docker-npm:
     uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
     needs: [static-checks-npm, tests-npm, tests-e2e-npm]

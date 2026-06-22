@@ -23,7 +23,7 @@
     "express": "^5.1.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.57.0",
+    "@playwright/test": "^1.61.0",
     "@types/node": "^25.0.10",
     "playwright-ctrf-json-reporter": "^0.0.27"
   }
