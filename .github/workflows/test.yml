@@ -85,7 +85,8 @@ jobs:
     with:
       matrix_scans: '["baseline"]'
       docker_compose_file: ''
-      pre_scan_command: 'npm ci && npm run start'
+      pre_scan_command: 'npm ci && npm run start &'
+      env_vars: '{"SERVER_TIMEOUT": "500000"}'
       target: "http://localhost:3000"
 
   build-docker-npm:
