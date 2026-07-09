@@ -78,7 +78,7 @@ jobs:
       test_command: 'E2E_TARGET=python npm run test:playwright'
 
   build-docker-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@feat/native-multiarch-build
     needs: [static-checks-npm, tests-npm, tests-e2e-npm]
     permissions:
       contents: read
@@ -86,6 +86,11 @@ jobs:
       security-events: write
     with:
       docker_file: Dockerfile
+      push_ghcr: true
+      push_dockerhub: true
+    secrets:
+      DOCKERHUB_TOKEN: ${{ secrets.SQNC_DOCKERHUB_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.SQNC_DOCKERHUB_USERNAME }}
 
   build-docker-poetry:
     uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
