@@ -1,3 +1,5 @@
+# Retrigger: force a fresh synchronize event so the PR's Checks tab picks up
+# the fix on shared-workflows@feat/native-multiarch-build (see ENG-309).
 name: Lint and test
 
 on:
