@@ -1,0 +1,19 @@
+# TEMPORARY: validates the push-event path of the migration-checks workflows.
+# Removed before this PR is finalised; the real push-time home is release.yml.
+name: Migration checks (push canary)
+on:
+  push:
+    branches: [ENG-313-migration-checks]
+
+jobs:
+  migration-checks-npm:
+    uses: digicatapult/shared-workflows/.github/workflows/migration-checks-npm.yml@ENG-313-migration-checks
+    permissions:
+      contents: read
+    with:
+      seed_command: 'npm run db:seed'
+
+  migration-checks-poetry:
+    uses: digicatapult/shared-workflows/.github/workflows/migration-checks-poetry.yml@ENG-313-migration-checks
+    permissions:
+      contents: read
