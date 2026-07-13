@@ -90,7 +90,7 @@ jobs:
       contents: read
 
   build-docker-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@ENG-314-container-scan
     needs: [static-checks-npm, tests-npm, tests-e2e-npm]
     permissions:
       contents: read
@@ -98,9 +98,10 @@ jobs:
       security-events: write
     with:
       docker_file: Dockerfile
+      scan_container: true
 
   build-docker-poetry:
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@ENG-314-container-scan
     needs: [static-checks-poetry, tests-poetry, tests-e2e-poetry]
     permissions:
       contents: read
@@ -108,6 +109,7 @@ jobs:
       security-events: write
     with:
       docker_file: Dockerfile.poetry
+      scan_container: true
 
   generate-sbom-npm:
     uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@main
