@@ -1,0 +1,20 @@
+# Minimal Postgres for the migration-checks canary jobs (both stacks).
+# The migration-checks shared workflows bring up this `postgres` service so
+# the CI database version tracks what a real consumer would run.
+services:
+  postgres:
+    container_name: hello-world-postgres
+    image: postgres:18.4-alpine
+    restart: on-failure
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=hello-world
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "hello-world"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 0s

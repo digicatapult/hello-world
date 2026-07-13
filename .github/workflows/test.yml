@@ -77,6 +77,18 @@ jobs:
       pre_test_command: 'npm ci && npx playwright install-deps && npx playwright install'
       test_command: 'E2E_TARGET=python npm run test:playwright'
 
+  migration-checks-npm:
+    uses: digicatapult/shared-workflows/.github/workflows/migration-checks-npm.yml@ENG-313-migration-checks
+    permissions:
+      contents: read
+    with:
+      seed_command: 'npm run db:seed'
+
+  migration-checks-poetry:
+    uses: digicatapult/shared-workflows/.github/workflows/migration-checks-poetry.yml@ENG-313-migration-checks
+    permissions:
+      contents: read
+
   build-docker-npm:
     uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@ENG-314-container-scan
     needs: [static-checks-npm, tests-npm, tests-e2e-npm]
