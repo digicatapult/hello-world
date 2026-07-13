@@ -14,6 +14,16 @@ jobs:
     uses: digicatapult/shared-workflows/.github/workflows/check-version.yml@main
     permissions: {}
 
+  generate-security-scorecard:
+    uses: digicatapult/shared-workflows/.github/workflows/generate-security-scorecard.yml@feature/add_ossf_scorecard_callee_workflow
+    permissions:
+      security-events: write
+      id-token: write
+    with:
+      publish_results: true
+      upload_type: artifact
+    secrets: inherit
+
   static-checks-npm:
     uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@main
     permissions:

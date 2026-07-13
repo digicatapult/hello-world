@@ -5,6 +5,17 @@ on:
     branches: ['main']
 
 jobs:
+  generate-security-scorecard:
+    uses: digicatapult/shared-workflows/.github/workflows/generate-security-scorecard.yml@feature/add_ossf_scorecard_callee_workflow
+    permissions:
+      security-events: write
+      id-token: write
+    with:
+      custom_scan: true
+      custom_checks: "Dangerous-Workflow,Maintained,CI-Tests,Signed-Releases,Vulnerabilities,Code-Review,SAST,Branch-Protection,Token-Permissions,License,Pinned-Dependencies,Binary-Artifacts,Security-Policy"
+      upload_type: artifact
+    secrets: inherit
+
   static-checks-npm:
     uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@main
     permissions:
