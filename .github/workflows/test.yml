@@ -22,6 +22,8 @@ jobs:
     with:
       publish_results: true
       upload_type: artifact
+      results_format: sarif
+      results_file: ${{ github.event.repository.name }}-scorecard.sarif
     secrets: inherit
 
   static-checks-npm:

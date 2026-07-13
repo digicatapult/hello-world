@@ -14,6 +14,8 @@ jobs:
       custom_scan: true
       custom_checks: "Dangerous-Workflow,Maintained,CI-Tests,Signed-Releases,Vulnerabilities,Code-Review,SAST,Branch-Protection,Token-Permissions,License,Pinned-Dependencies,Binary-Artifacts,Security-Policy"
       upload_type: artifact
+      results_format: sarif
+      results_file: ${{ github.event.repository.name }}-scorecard.sarif
     secrets: inherit
 
   static-checks-npm:
