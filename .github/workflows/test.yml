@@ -14,7 +14,21 @@ jobs:
     uses: digicatapult/shared-workflows/.github/workflows/check-version.yml@main
     permissions: {}
 
-  generate-security-scorecard:
+  generate-custom-scorecard:
+    uses: digicatapult/shared-workflows/.github/workflows/generate-security-scorecard.yml@feature/add_ossf_scorecard_callee_workflow
+    permissions:
+      security-events: write
+      id-token: write
+    with:
+      custom_scan: true
+      custom_checks: "Dangerous-Workflow,Maintained,CI-Tests,Signed-Releases,Vulnerabilities,Code-Review,SAST,Branch-Protection,Token-Permissions,License,Pinned-Dependencies,Binary-Artifacts,Security-Policy"
+      upload_type: artifact
+      results_format: sarif
+      results_file: ${{ github.event.repository.name }}-scorecard.sarif
+    secrets:
+      repo_token: ${{ secrets.GITHUB_TOKEN }}
+
+  generate-public-scorecard:
     uses: digicatapult/shared-workflows/.github/workflows/generate-security-scorecard.yml@feature/add_ossf_scorecard_callee_workflow
     permissions:
       security-events: write

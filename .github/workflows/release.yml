@@ -5,7 +5,7 @@ on:
     branches: ['main']
 
 jobs:
-  generate-security-scorecard:
+  generate-custom-scorecard:
     uses: digicatapult/shared-workflows/.github/workflows/generate-security-scorecard.yml@feature/add_ossf_scorecard_callee_workflow
     permissions:
       security-events: write
