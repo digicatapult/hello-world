@@ -16,7 +16,8 @@ jobs:
       upload_type: artifact
       results_format: sarif
       results_file: ${{ github.event.repository.name }}-scorecard.sarif
-    secrets: inherit
+    secrets:
+      repo_token: ${{ secrets.GITHUB_TOKEN }}
 
   static-checks-npm:
     uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@main
