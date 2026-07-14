@@ -78,7 +78,7 @@ jobs:
       test_command: 'E2E_TARGET=python npm run test:playwright'
 
   build-docker-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@ENG-314-container-scan
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
     needs: [static-checks-npm, tests-npm, tests-e2e-npm]
     permissions:
       contents: read
@@ -89,7 +89,7 @@ jobs:
       scan_container: true
 
   build-docker-poetry:
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@ENG-314-container-scan
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
     needs: [static-checks-poetry, tests-poetry, tests-e2e-poetry]
     permissions:
       contents: read
