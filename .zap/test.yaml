@@ -1,3 +1,13 @@
+env:
+  contexts:
+    - name: test
+      urls:
+        - "http://localhost:3000"
+      includePaths:
+        - "http://localhost:3000.*"
+  parameters:
+    failOnError: true
+    progressToStdout: true
 jobs:
   - type: report
     parameters:
