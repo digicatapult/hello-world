@@ -10,6 +10,9 @@ jobs:
     permissions:
       security-events: write
       id-token: write
+      contents: read
+      actions: read
+      pull-requests: read
     with:
       custom_scan: true
       custom_checks: "Dangerous-Workflow,Maintained,CI-Tests,Signed-Releases,Vulnerabilities,Code-Review,SAST,Branch-Protection,Token-Permissions,License,Pinned-Dependencies,Binary-Artifacts,Security-Policy"
