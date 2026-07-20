@@ -1,0 +1,7 @@
+jobs:
+  - type: report
+    parameters:
+      template: risk-confidence-html
+      reportDir: /zap/wrk
+      reportFile: "zap-report"
+      reportTitle: "ZAP Scan Report"
