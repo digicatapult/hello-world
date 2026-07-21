@@ -29,14 +29,27 @@ jobs:
       pre_test_command: 'npm ci && npx playwright install-deps && npx playwright install'
       test_command: 'E2E_TARGET=node npm run test:playwright || exit 1'
 
+  migration-checks-npm:
+    uses: digicatapult/shared-workflows/.github/workflows/migration-checks-npm.yml@ENG-313-migration-checks
+    permissions:
+      contents: read
+    with:
+      seed_command: 'npm run db:seed'
+
+  migration-checks-poetry:
+    uses: digicatapult/shared-workflows/.github/workflows/migration-checks-poetry.yml@ENG-313-migration-checks
+    permissions:
+      contents: read
+
   build-docker:
     uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
-    needs: [static-checks-npm, tests-npm, tests-e2e-npm]
+    needs: [static-checks-npm, tests-npm, tests-e2e-npm, migration-checks-npm, migration-checks-poetry]
     permissions:
       contents: read
       packages: write
       security-events: write
     with:
+      scan_container: true
       push_dockerhub: false
       push_ghcr: true
     secrets:
