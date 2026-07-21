@@ -49,7 +49,7 @@ jobs:
       packages: write
       security-events: write
     with:
-      scan_container: true
+      scan_container: false
       push_dockerhub: false
       push_ghcr: true
     secrets:
