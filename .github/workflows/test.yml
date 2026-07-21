@@ -78,7 +78,7 @@ jobs:
       test_command: 'E2E_TARGET=python npm run test:playwright'
 
   scan-zap:
-    uses: digicatapult/shared-workflows/.github/workflows/scan-zap.yml@feature/add_zap_proxy_scan
+    uses: digicatapult/shared-workflows/.github/workflows/scan-zap.yml@main
     needs: [tests-npm]
     permissions:
       contents: read
@@ -93,6 +93,18 @@ jobs:
       env_vars: '{"SERVER_TIMEOUT": "500000"}'
       target: "http://localhost:3000"
 
+  migration-checks-npm:
+    uses: digicatapult/shared-workflows/.github/workflows/migration-checks-npm.yml@main
+    permissions:
+      contents: read
+    with:
+      seed_command: 'npm run db:seed'
+
+  migration-checks-poetry:
+    uses: digicatapult/shared-workflows/.github/workflows/migration-checks-poetry.yml@main
+    permissions:
+      contents: read
+
   build-docker-npm:
     uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
     needs: [static-checks-npm, tests-npm, tests-e2e-npm]
@@ -102,6 +114,7 @@ jobs:
       security-events: write
     with:
       docker_file: Dockerfile
+      scan_container: true
 
   build-docker-poetry:
     uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
@@ -112,6 +125,7 @@ jobs:
       security-events: write
     with:
       docker_file: Dockerfile.poetry
+      scan_container: true
 
   generate-sbom-npm:
     uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@main
