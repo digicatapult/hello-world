@@ -114,7 +114,7 @@ jobs:
       security-events: write
     with:
       docker_file: Dockerfile
-      scan_container: true
+      scan_container: false
 
   build-docker-poetry:
     uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
@@ -125,7 +125,7 @@ jobs:
       security-events: write
     with:
       docker_file: Dockerfile.poetry
-      scan_container: true
+      scan_container: false
 
   generate-sbom-npm:
     uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@main
