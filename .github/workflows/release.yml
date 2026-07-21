@@ -69,4 +69,3 @@ jobs:
     needs: [build-docker, generate-sbom-npm]
     with:
       get_sbom: true
-    secrets: inherit
