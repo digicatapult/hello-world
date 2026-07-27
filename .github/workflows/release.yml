@@ -6,14 +6,14 @@ on:
 
 jobs:
   static-checks-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@renovate/major-github-actions-trusted-updates
     permissions:
       security-events: write
     with:
       matrix_commands: '["start"]'
 
   tests-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@renovate/major-github-actions-trusted-updates
     permissions:
       pull-requests: write
     with:
@@ -22,7 +22,7 @@ jobs:
       tests: '["test:init"]'
 
   tests-e2e-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@renovate/major-github-actions-trusted-updates
     permissions: {}
     with:
       docker_compose_file: ''
@@ -42,7 +42,7 @@ jobs:
       contents: read
 
   build-docker:
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@renovate/major-github-actions-trusted-updates
     needs: [static-checks-npm, tests-npm, tests-e2e-npm, migration-checks-npm, migration-checks-poetry]
     permissions:
       contents: read
@@ -57,12 +57,12 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.SQNC_DOCKERHUB_USERNAME }}
 
   generate-sbom-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@renovate/major-github-actions-trusted-updates
     permissions: {}
     needs: [build-docker]
 
   release-github:
-    uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@renovate/major-github-actions-trusted-updates
     permissions:
       contents: write
       pull-requests: read
