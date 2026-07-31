@@ -1,6 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const e2eTarget = process.env.E2E_TARGET ?? 'python';
+const e2eTarget = process.env.E2E_TARGET;
+if (e2eTarget !== 'node' && e2eTarget !== 'python') {
+  throw new Error(`E2E_TARGET must be 'node' or 'python', got: ${String(e2eTarget)}`);
+}
 const isNodeTarget = e2eTarget === 'node';
 const port = isNodeTarget ? 3000 : 3001;
 const baseURL = `http://localhost:${port}`;

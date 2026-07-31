@@ -69,13 +69,16 @@ jobs:
       npm_build_command: 'npm run start'
       tests: '["test:init"]'
 
-  tests-e2e-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@main
-    permissions: {}
+  tests-e2e:
+    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-poetry.yml@main
+    needs: [tests-poetry, tests-npm]
+    permissions:
+      contents: read
     with:
       docker_compose_file: ''
+      setup_node: true
       pre_test_command: 'npm ci && npx playwright install-deps && npx playwright install'
-      test_command: 'E2E_TARGET=node npm run test:playwright || exit 1'
+      test_command: 'E2E_TARGET=node npm run test:playwright && E2E_TARGET=python npm run test:playwright'
 
   static-checks-poetry:
     uses: digicatapult/shared-workflows/.github/workflows/static-checks-poetry.yml@main
@@ -100,35 +103,39 @@ jobs:
       docker_compose_file: ''
       tests: '["tests/unit"]'
 
-  tests-e2e-poetry:
-    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-poetry.yml@main
+  migration-checks-npm:
+    uses: digicatapult/shared-workflows/.github/workflows/migration-checks-npm.yml@main
     permissions:
       contents: read
     with:
-      docker_compose_file: ''
-      setup_node: true
-      pre_test_command: 'npm ci && npx playwright install-deps && npx playwright install'
-      test_command: 'E2E_TARGET=python npm run test:playwright'
+      seed_command: 'npm run db:seed'
+
+  migration-checks-poetry:
+    uses: digicatapult/shared-workflows/.github/workflows/migration-checks-poetry.yml@main
+    permissions:
+      contents: read
 
   build-docker-npm:
     uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
-    needs: [static-checks-npm, tests-npm, tests-e2e-npm]
+    needs: [static-checks-npm, tests-npm, tests-e2e, migration-checks-npm]
     permissions:
       contents: read
       packages: write
       security-events: write
     with:
       docker_file: Dockerfile
+      scan_container: false
 
   build-docker-poetry:
     uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
-    needs: [static-checks-poetry, tests-poetry, tests-e2e-poetry]
+    needs: [static-checks-poetry, tests-poetry, tests-e2e, migration-checks-poetry]
     permissions:
       contents: read
       packages: write
       security-events: write
     with:
       docker_file: Dockerfile.poetry
+      scan_container: false
 
   generate-sbom-npm:
     uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@main
@@ -141,6 +148,7 @@ jobs:
     secrets:
       DTRACK_APIKEY: ${{ secrets.DTRACK_APIKEY }}
       DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
+      DTRACK_PARENT_GUID: ${{ secrets.DTRACK_PARENT_GUID }}
 
   generate-sbom-poetry:
     uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@main
@@ -158,3 +166,4 @@ jobs:
     secrets:
       DTRACK_APIKEY: ${{ secrets.DTRACK_APIKEY }}
       DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
+      DTRACK_PARENT_GUID: ${{ secrets.DTRACK_PARENT_GUID }}
