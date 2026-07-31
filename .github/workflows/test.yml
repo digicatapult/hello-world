@@ -115,6 +115,7 @@ jobs:
     secrets:
       DTRACK_APIKEY: ${{ secrets.DTRACK_APIKEY }}
       DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
+      DTRACK_PARENT_GUID: ${{ secrets.DTRACK_PARENT_GUID }}
 
   generate-sbom-poetry:
     uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@main
@@ -132,3 +133,4 @@ jobs:
     secrets:
       DTRACK_APIKEY: ${{ secrets.DTRACK_APIKEY }}
       DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
+      DTRACK_PARENT_GUID: ${{ secrets.DTRACK_PARENT_GUID }}
