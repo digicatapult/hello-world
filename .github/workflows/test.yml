@@ -105,7 +105,7 @@ jobs:
       scan_container: false
 
   generate-sbom-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@feature/enable_is_latest_on_dtrack_job
     permissions: {}
     needs: [build-docker-npm]
     with:
