@@ -5,6 +5,23 @@ on:
     branches: ['main']
 
 jobs:
+  generate-custom-scorecard:
+    uses: digicatapult/shared-workflows/.github/workflows/generate-security-scorecard.yml@main
+    permissions:
+      security-events: write
+      id-token: write
+      contents: read
+      actions: read
+      pull-requests: read
+    with:
+      custom_scan: true
+      custom_checks: "Dangerous-Workflow,Maintained,CI-Tests,Signed-Releases,Vulnerabilities,Code-Review,SAST,Branch-Protection,Token-Permissions,License,Pinned-Dependencies,Binary-Artifacts,Security-Policy"
+      upload_type: artifact
+      results_format: sarif
+      results_file: ${{ github.event.repository.name }}-scorecard.sarif
+    secrets:
+      repo_token: ${{ secrets.GITHUB_TOKEN }}
+
   static-checks-npm:
     uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@main
     permissions:
@@ -30,14 +47,14 @@ jobs:
       test_command: 'E2E_TARGET=node npm run test:playwright || exit 1'
 
   migration-checks-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/migration-checks-npm.yml@ENG-313-migration-checks
+    uses: digicatapult/shared-workflows/.github/workflows/migration-checks-npm.yml@main
     permissions:
       contents: read
     with:
       seed_command: 'npm run db:seed'
 
   migration-checks-poetry:
-    uses: digicatapult/shared-workflows/.github/workflows/migration-checks-poetry.yml@ENG-313-migration-checks
+    uses: digicatapult/shared-workflows/.github/workflows/migration-checks-poetry.yml@main
     permissions:
       contents: read
 

@@ -1,5 +1,7 @@
 # Hello world
 
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/digicatapult/hello-world/badge)](https://scorecard.dev/viewer/?uri=github.com/digicatapult/hello-world)
+
 This repository intentionally contains **two** minimal “hello world” services so we can validate reusable workflows for both ecosystems:
 
 - **NPM (Node/Express)**: `src/index.js` (port `3000`)
