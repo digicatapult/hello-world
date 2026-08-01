@@ -1,19 +1,25 @@
 name: Release
 
+# Releases the version commit rather than the merge commit, which is why every
+# job carries the guard: build-docker, generate-sbom and release-github all read
+# the version from the checked out tree. apply-version.yml carries the inverse
+# condition. See the Merge queue section of README.md.
 on:
   push:
     branches: ['main']
 
 jobs:
   static-checks-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@main
+    if: ${{ startsWith(github.event.head_commit.message, 'chore(release):') }}
+    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@merge-queue-versioning
     permissions:
       security-events: write
     with:
       matrix_commands: '["start"]'
 
   tests-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@main
+    if: ${{ startsWith(github.event.head_commit.message, 'chore(release):') }}
+    uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@merge-queue-versioning
     permissions:
       pull-requests: write
     with:
@@ -22,6 +28,7 @@ jobs:
       tests: '["test:init"]'
 
   tests-e2e-npm:
+    if: ${{ startsWith(github.event.head_commit.message, 'chore(release):') }}
     uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@main
     permissions: {}
     with:
@@ -30,18 +37,21 @@ jobs:
       test_command: 'E2E_TARGET=node npm run test:playwright || exit 1'
 
   migration-checks-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/migration-checks-npm.yml@ENG-313-migration-checks
+    if: ${{ startsWith(github.event.head_commit.message, 'chore(release):') }}
+    uses: digicatapult/shared-workflows/.github/workflows/migration-checks-npm.yml@merge-queue-versioning
     permissions:
       contents: read
     with:
       seed_command: 'npm run db:seed'
 
   migration-checks-poetry:
-    uses: digicatapult/shared-workflows/.github/workflows/migration-checks-poetry.yml@ENG-313-migration-checks
+    if: ${{ startsWith(github.event.head_commit.message, 'chore(release):') }}
+    uses: digicatapult/shared-workflows/.github/workflows/migration-checks-poetry.yml@merge-queue-versioning
     permissions:
       contents: read
 
   build-docker:
+    if: ${{ startsWith(github.event.head_commit.message, 'chore(release):') }}
     uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
     needs: [static-checks-npm, tests-npm, tests-e2e-npm, migration-checks-npm, migration-checks-poetry]
     permissions:
@@ -57,11 +67,13 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.SQNC_DOCKERHUB_USERNAME }}
 
   generate-sbom-npm:
+    if: ${{ startsWith(github.event.head_commit.message, 'chore(release):') }}
     uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@main
     permissions: {}
     needs: [build-docker]
 
   release-github:
+    if: ${{ startsWith(github.event.head_commit.message, 'chore(release):') }}
     uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@main
     permissions:
       contents: write

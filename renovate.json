@@ -1,0 +1,21 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"description": "Merge queue overrides, held inline until proven, then promoted to digicatapult/renovate-config. See the Merge queue section of README.md.",
+	"extends": [
+		"github>digicatapult/renovate-config"
+	],
+	"addLabels": [
+		"v:patch"
+	],
+	"platformAutomerge": true,
+	"rebaseWhen": "automerging",
+	"npm": {
+		"bumpVersion": null,
+		"lockFileMaintenance": {
+			"rebaseWhen": "automerging"
+		}
+	},
+	"poetry": {
+		"bumpVersion": null
+	}
+}

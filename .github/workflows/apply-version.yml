@@ -1,0 +1,18 @@
+name: Apply version
+
+# A merge produces two runs on main: the merge commit, where this workflow
+# pushes a version commit; then that version commit, where this is skipped by the
+# guard below and release.yml runs instead. release.yml carries the inverse
+# condition and both must agree on the prefix.
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  apply-version:
+    if: ${{ !startsWith(github.event.head_commit.message, 'chore(release):') }}
+    uses: digicatapult/shared-workflows/.github/workflows/apply-version-npm.yml@merge-queue-versioning
+    permissions: {}
+    secrets:
+      bot-id: ${{ secrets.BOT_ID }}
+      bot-key: ${{ secrets.BOT_KEY }}

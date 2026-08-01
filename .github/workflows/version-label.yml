@@ -1,0 +1,18 @@
+name: Version label
+
+# Replaces the check-version job that used to run in test.yml. Its own file
+# because it must re-run on labeled/unlabeled, which in test.yml would re-run the
+# whole suite on every label change. See the Merge queue section of README.md.
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, labeled, unlabeled]
+  merge_group:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  require-version-label:
+    uses: digicatapult/shared-workflows/.github/workflows/require-version-label.yml@merge-queue-versioning
+    permissions: {}
