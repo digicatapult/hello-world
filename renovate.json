@@ -1,0 +1,7 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": [
+		"github>digicatapult/renovate-config",
+		"github>digicatapult/renovate-config:merge-queue#merge-queue-preset"
+	]
+}
