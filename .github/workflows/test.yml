@@ -93,8 +93,6 @@ jobs:
     with:
       docker_file: Dockerfile
       scan_container: false
-      # No version bump on the branch under merge queue versioning, so the
-      # version matches the latest release. require-version-label is the gate.
       fail_on_same_version: false
 
   build-docker-poetry:
@@ -107,8 +105,6 @@ jobs:
     with:
       docker_file: Dockerfile.poetry
       scan_container: false
-      # No version bump on the branch under merge queue versioning, so the
-      # version matches the latest release. require-version-label is the gate.
       fail_on_same_version: false
 
   generate-sbom-npm:

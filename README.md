@@ -30,7 +30,7 @@ How it fits together:
 | `version-label.yml` | Gates a pull request on carrying exactly one `v:` label. Replaces the old `check-version` job. |
 | `apply-version.yml` | Computes and commits the version on `main` after merge. |
 | `release.yml` | Releases the version commit rather than the merge commit. |
-| `test.yml` | Provides the required checks, and must trigger on `merge_group`. |
+| `test.yml` | Provides the required checks, and must trigger on `merge_group`. Its `build-docker` jobs set `fail_on_same_version: false`, since the branch carries no bump. |
 
 A merge therefore produces **two** runs on `main`: the merge commit, where `apply-version` pushes a `chore(release):` version commit; then that version commit, where `apply-version` is skipped and `release.yml` runs. The commit prefix guard is what stops the two triggering each other. They must agree on it.
 
