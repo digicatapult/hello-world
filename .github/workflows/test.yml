@@ -22,7 +22,7 @@ concurrency:
 # on main after merge by apply-version.yml instead.
 jobs:
   static-checks-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@merge-queue-versioning
     permissions:
       security-events: write
     with:
@@ -55,7 +55,7 @@ jobs:
       test_command: 'E2E_TARGET=node npm run test:playwright && E2E_TARGET=python npm run test:playwright'
 
   static-checks-poetry:
-    uses: digicatapult/shared-workflows/.github/workflows/static-checks-poetry.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/static-checks-poetry.yml@merge-queue-versioning
     permissions:
       security-events: write
       contents: read

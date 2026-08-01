@@ -24,7 +24,7 @@ on:
 jobs:
   static-checks-npm:
     if: ${{ startsWith(github.event.head_commit.message, 'chore(release):') }}
-    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@merge-queue-versioning
     permissions:
       security-events: write
     with:
