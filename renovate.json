@@ -1,7 +1,27 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"description": [
+		"Merge queue overrides, held inline while the model is proven in this canary. Once they have been demonstrated end to end they should move into a shared preset in digicatapult/renovate-config so other repositories can adopt them.",
+		"bumpVersion is unset because the base preset has Renovate write the next version onto its own branch. That is exactly the collision merge queue versioning removes: two Renovate pull requests would compute the same version and the second to reach the queue would be evicted.",
+		"v:patch is added because require-version-label gates every pull request on carrying exactly one v: label, and the base preset applies none. Without it every Renovate pull request would fail the gate and could never merge.",
+		"platformAutomerge uses GitHub native auto-merge so Renovate routes through the queue rather than merging around it via the API.",
+		"rebaseWhen conflicted replaces behind-base-branch from :rebaseStalePrs. The queue tests each pull request against trunk itself, so catch-up rebases are wasted CI, and pushing to a branch sitting in the queue evicts it."
+	],
 	"extends": [
-		"github>digicatapult/renovate-config",
-		"github>digicatapult/renovate-config:merge-queue#merge-queue-preset"
-	]
+		"github>digicatapult/renovate-config"
+	],
+	"addLabels": [
+		"v:patch"
+	],
+	"platformAutomerge": true,
+	"rebaseWhen": "conflicted",
+	"npm": {
+		"bumpVersion": null,
+		"lockFileMaintenance": {
+			"rebaseWhen": "conflicted"
+		}
+	},
+	"poetry": {
+		"bumpVersion": null
+	}
 }
