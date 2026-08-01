@@ -1,19 +1,26 @@
 name: Lint and test
 
+# merge_group is required for every workflow providing a required check. The
+# merge queue runs the required checks against its own temporary branch
+# (main + the PRs ahead of this one + this one), and a required check that never
+# reports there leaves the queue waiting indefinitely.
 on:
   pull_request:
     types: [opened, reopened, synchronize]
+  merge_group:
   workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# The check-version job that used to run here has been replaced by the
+# require-version-label gate in version-label.yml. check-version asserts that
+# package.json is already ahead of the last release, which is an absolute number
+# on the branch: two approved pull requests necessarily compute the same one, so
+# the second to reach the queue fails and is evicted. The version is now applied
+# on main after merge by apply-version.yml instead.
 jobs:
-  check-version:
-    uses: digicatapult/shared-workflows/.github/workflows/check-version.yml@main
-    permissions: {}
-
   static-checks-npm:
     uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@main
     permissions:
@@ -27,7 +34,7 @@ jobs:
       trufflehog_extra_args: "--results=verified,unknown --log-level=2"
 
   tests-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@merge-queue-versioning
     permissions:
       pull-requests: write
     with:
@@ -71,14 +78,14 @@ jobs:
       tests: '["tests/unit"]'
 
   migration-checks-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/migration-checks-npm.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/migration-checks-npm.yml@merge-queue-versioning
     permissions:
       contents: read
     with:
       seed_command: 'npm run db:seed'
 
   migration-checks-poetry:
-    uses: digicatapult/shared-workflows/.github/workflows/migration-checks-poetry.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/migration-checks-poetry.yml@merge-queue-versioning
     permissions:
       contents: read
 

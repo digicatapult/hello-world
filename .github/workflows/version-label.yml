@@ -1,0 +1,29 @@
+name: Version label
+
+# The pull request version gate for merge queue mode. It replaces the
+# check-version job that used to run in test.yml, which asserted that
+# package.json was already ahead of the last release. That assertion cannot hold
+# for more than one approved pull request at a time, so it cannot survive a
+# merge queue. This gate checks the *intent* to bump instead, which every queued
+# pull request can satisfy at once. The number is applied after merge by
+# apply-version.yml.
+#
+# This lives in its own file rather than in test.yml because it has to re-run on
+# labeled/unlabeled. Adding those types to test.yml would re-run the entire test
+# suite every time anyone touched any label on any pull request.
+#
+# merge_group is required: a required check that never reports on the queue's
+# branch leaves the merge queue waiting indefinitely.
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, labeled, unlabeled]
+  merge_group:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  require-version-label:
+    uses: digicatapult/shared-workflows/.github/workflows/require-version-label.yml@merge-queue-versioning
+    permissions: {}

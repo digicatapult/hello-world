@@ -1,0 +1,27 @@
+name: Apply version
+
+# Computes and commits the release version on main after a pull request has
+# merged, replacing the synchronise-pr-version / synchronise-trunk-version pair
+# that used to write the version onto the pull request branch before merge.
+#
+# A merge produces two runs on main:
+#
+#   1. the merge commit    -> this workflow runs and pushes a version commit,
+#                             release.yml is skipped
+#   2. the version commit  -> this workflow is skipped by the guard below,
+#                             release.yml runs and releases the new version
+#
+# The guard is what stops those two runs triggering each other indefinitely.
+# release.yml carries the inverse condition. Both must agree on the prefix.
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  apply-version:
+    if: ${{ !startsWith(github.event.head_commit.message, 'chore(release):') }}
+    uses: digicatapult/shared-workflows/.github/workflows/apply-version-npm.yml@merge-queue-versioning
+    permissions: {}
+    secrets:
+      bot-id: ${{ secrets.BOT_ID }}
+      bot-key: ${{ secrets.BOT_KEY }}
