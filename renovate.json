@@ -1,12 +1,6 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
-	"description": [
-		"Merge queue overrides, held inline while the model is proven in this canary. Once they have been demonstrated end to end they should move into a shared preset in digicatapult/renovate-config.",
-		"bumpVersion is unset because the base preset has Renovate write the next version onto its own branch. That is exactly the collision merge queue versioning removes: two Renovate pull requests would compute the same version and the second to reach the queue would be evicted.",
-		"v:patch is added because require-version-label gates every pull request on carrying exactly one v: label, and the base preset applies none. Without it every Renovate pull request would fail the gate and could never merge.",
-		"platformAutomerge is already Renovate's default, but it is set explicitly because it is load bearing here: GitHub merge queues are only supported when it is true, since GitHub itself does the enqueueing. Renovate's own branch automerge (automergeType=branch) can never work behind a merge queue.",
-		"rebaseWhen is automerging rather than the base preset's behind-base-branch (from :rebaseStalePrs). behind-base-branch rebases every open pull request whenever trunk moves, which under a queue is wasted CI and evicts anything already enqueued. automerging restricts that to pull requests that are actually automerging, and behaves as never for the rest. conflicted would save more CI still, on the grounds that the queue does its own final test against trunk, but Renovate documents rebaseWhen=auto as rebasing when automerge is enabled, so conflicted risks leaving an automerging pull request behind its base and never merged. Prefer the option that cannot deadlock, then tighten it once real Renovate traffic has been observed here."
-	],
+	"description": "Merge queue overrides, held inline until proven, then promoted to digicatapult/renovate-config. See the Merge queue section of README.md.",
 	"extends": [
 		"github>digicatapult/renovate-config"
 	],

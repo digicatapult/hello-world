@@ -1,9 +1,7 @@
 name: Lint and test
 
-# merge_group is required for every workflow providing a required check. The
-# merge queue runs the required checks against its own temporary branch
-# (main + the PRs ahead of this one + this one), and a required check that never
-# reports there leaves the queue waiting indefinitely.
+# merge_group is required: a required check that never reports on the queue's
+# branch leaves the queue waiting indefinitely.
 on:
   pull_request:
     types: [opened, reopened, synchronize]
@@ -14,12 +12,8 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-# The check-version job that used to run here has been replaced by the
-# require-version-label gate in version-label.yml. check-version asserts that
-# package.json is already ahead of the last release, which is an absolute number
-# on the branch: two approved pull requests necessarily compute the same one, so
-# the second to reach the queue fails and is evicted. The version is now applied
-# on main after merge by apply-version.yml instead.
+# check-version has been replaced by the require-version-label gate in
+# version-label.yml. See the Merge queue section of README.md.
 jobs:
   static-checks-npm:
     uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@merge-queue-versioning
