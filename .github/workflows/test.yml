@@ -117,20 +117,20 @@ jobs:
       DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
       DTRACK_PARENT_GUID: ${{ secrets.DTRACK_PARENT_GUID }}
 
-  generate-sbom-poetry:
-    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@main
-    permissions: {}
-    needs: [build-docker-poetry]
-    with:
-      package_manager: poetry
-      sbom_tool: "@cyclonedx/cdxgen"
-      install_python_deps: true
-      python_version: "3.14"
-      additional_args: "--spec-version 1.5 --type python"
-      enable_check_version: true
-      enable_dtrack_project: false
-      sbom_output_file: ${{ github.event.repository.name }}-poetry.cdx.json
-    secrets:
-      DTRACK_APIKEY: ${{ secrets.DTRACK_APIKEY }}
-      DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
-      DTRACK_PARENT_GUID: ${{ secrets.DTRACK_PARENT_GUID }}
+  # generate-sbom-poetry:
+  #   uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@main
+  #   permissions: {}
+  #   needs: [build-docker-poetry]
+  #   with:
+  #     package_manager: poetry
+  #     sbom_tool: "@cyclonedx/cdxgen"
+  #     install_python_deps: true
+  #     python_version: "3.14"
+  #     additional_args: "--spec-version 1.5 --type python"
+  #     enable_check_version: true
+  #     enable_dtrack_project: false
+  #     sbom_output_file: ${{ github.event.repository.name }}-poetry.cdx.json
+  #   secrets:
+  #     DTRACK_APIKEY: ${{ secrets.DTRACK_APIKEY }}
+  #     DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
+  #     DTRACK_PARENT_GUID: ${{ secrets.DTRACK_PARENT_GUID }}
