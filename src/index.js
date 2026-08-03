@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const port = 3000;
-const timeout = process.env.NODE_ENV === 'test' ? 0 : 10000;
+const timeout = process.env.NODE_ENV === 'test' ? 0 : 12000;
 
 app.get('/', (request, response) => {
   response.send("Hello world!");
