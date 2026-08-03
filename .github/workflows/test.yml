@@ -128,7 +128,7 @@ jobs:
       python_version: "3.14"
       additional_args: "--spec-version 1.5 --type python"
       enable_check_version: true
-      enable_dtrack_project: true
+      enable_dtrack_project: false
       sbom_output_file: ${{ github.event.repository.name }}-poetry.cdx.json
     secrets:
       DTRACK_APIKEY: ${{ secrets.DTRACK_APIKEY }}

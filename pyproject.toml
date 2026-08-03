@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hello-world"
-version = "2.0.0"
+version = "2.0.3"
 description = "A minimal Python/Poetry hello world web server"
 authors = ["Digital Catapult"]
 readme = "README.md"
