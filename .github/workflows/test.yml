@@ -83,7 +83,7 @@ jobs:
       contents: read
 
   build-docker-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@bug/investigate_merge_manifest_failure
     needs: [static-checks-npm, tests-npm, tests-e2e, migration-checks-npm]
     permissions:
       contents: read
@@ -94,7 +94,7 @@ jobs:
       scan_container: false
 
   build-docker-poetry:
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@bug/investigate_merge_manifest_failure
     needs: [static-checks-poetry, tests-poetry, tests-e2e, migration-checks-poetry]
     permissions:
       contents: read
