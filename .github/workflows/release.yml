@@ -42,7 +42,7 @@ jobs:
       contents: read
 
   build-docker:
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@bug/investigate_merge_manifest_failure
     needs: [static-checks-npm, tests-npm, tests-e2e-npm, migration-checks-npm, migration-checks-poetry]
     permissions:
       contents: read
