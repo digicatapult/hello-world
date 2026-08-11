@@ -1,6 +1,6 @@
 {
   "name": "hello-world",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "A minimally-useful NPM package",
   "homepage": "https://github.com/digicatapult/hello-world#readme",
   "bugs": {
@@ -18,6 +18,7 @@
     "start": "node src/index.js",
     "test:init": "node src/index.js",
     "test:playwright": "NODE_ENV=test playwright test --trace on --max-failures=1",
+    "test:typescript-migration": "node src/ts-migration.js",
     "db:cmd": "node ./node_modules/knex/bin/cli.js",
     "db:migrate": "npm run db:cmd -- migrate:latest",
     "db:rollback": "npm run db:cmd -- migrate:rollback",
@@ -31,6 +32,11 @@
   "devDependencies": {
     "@playwright/test": "^1.61.0",
     "@types/node": "^25.0.10",
-    "playwright-ctrf-json-reporter": "^0.0.27"
+    "@typescript/native": "npm:typescript@^7.0.1",
+    "playwright-ctrf-json-reporter": "^0.0.27",
+    "typescript": "npm:@typescript/typescript6@^6.0.1"
+  },
+  "allowScripts": {
+    "fsevents": true
   }
 }
