@@ -6,10 +6,10 @@ on:
 
 jobs:
   scan-secrets:
-    uses: digicatapult/shared-workflows/.github/workflows/scan-secrets.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/scan-secrets.yml@chore/pin_trufflehog_version_input
 
   static-checks-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@chore/pin_trufflehog_version_input
     permissions:
       security-events: write
     with:

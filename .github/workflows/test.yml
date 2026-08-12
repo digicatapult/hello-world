@@ -15,10 +15,10 @@ jobs:
     permissions: {}
 
   scan-secrets:
-    uses: digicatapult/shared-workflows/.github/workflows/scan-secrets.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/scan-secrets.yml@chore/pin_trufflehog_version_input
 
   static-checks-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@chore/pin_trufflehog_version_input
     permissions:
       security-events: write
     with:
@@ -50,7 +50,7 @@ jobs:
       test_command: 'E2E_TARGET=node npm run test:playwright && E2E_TARGET=python npm run test:playwright'
 
   static-checks-poetry:
-    uses: digicatapult/shared-workflows/.github/workflows/static-checks-poetry.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/static-checks-poetry.yml@chore/pin_trufflehog_version_input
     permissions:
       security-events: write
       contents: read
