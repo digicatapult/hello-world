@@ -14,6 +14,9 @@ jobs:
     uses: digicatapult/shared-workflows/.github/workflows/check-version.yml@main
     permissions: {}
 
+  scan-secrets:
+    uses: digicatapult/shared-workflows/.github/workflows/scan-secrets.yml@main
+
   static-checks-npm:
     uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@main
     permissions:
@@ -24,7 +27,6 @@ jobs:
       enable_trufflehog_action: true
       semgrep_extra_args: '--config="p/default"'
       semgrep_upload_type: "sarif"
-      trufflehog_extra_args: "--results=verified,unknown --log-level=2"
 
   tests-npm:
     uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@main
@@ -59,7 +61,6 @@ jobs:
       enable_trufflehog_action: true
       semgrep_extra_args: '--config="p/default"'
       semgrep_upload_type: "sarif"
-      trufflehog_extra_args: "--results=verified,unknown --log-level=2"
 
   tests-poetry:
     uses: digicatapult/shared-workflows/.github/workflows/tests-poetry.yml@main
