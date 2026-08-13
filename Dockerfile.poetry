@@ -1,5 +1,5 @@
-# syntax=docker/dockerfile:1.20
-FROM python:3.12-slim AS service
+# syntax=docker/dockerfile:1.26
+FROM python:3.14-slim AS service
 
 ENV POETRY_VERSION=2.3.1
 
