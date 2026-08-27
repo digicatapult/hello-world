@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.20
+# syntax=docker/dockerfile:1.26
 FROM node:24-trixie-slim AS service
 
 RUN apt-get update && apt-get upgrade -y
