@@ -1,6 +1,6 @@
 {
   "name": "hello-world",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "A minimally-useful NPM package",
   "homepage": "https://github.com/digicatapult/hello-world#readme",
   "bugs": {
@@ -30,7 +30,7 @@
     "pg": "^8.23.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.62.1",
+    "@playwright/test": "^1.63.0",
     "@types/node": "^25.9.5",
     "@typescript/native": "npm:typescript@7.0.2",
     "playwright-ctrf-json-reporter": "^0.0.29",
