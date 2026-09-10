@@ -1,6 +1,11 @@
 {
   "name": "hello-world",
   "version": "2.0.8",
+  "private": true,
+  "workspaces": [
+    "portal",
+    "worker"
+  ],
   "description": "A minimally-useful NPM package",
   "homepage": "https://github.com/digicatapult/hello-world#readme",
   "bugs": {
@@ -13,19 +18,32 @@
   "license": "ISC",
   "author": "Digital Catapult",
   "type": "commonjs",
-  "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js",
-    "test:init": "node src/index.js",
+    "build": "npm run build --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "check": "npm run check --workspaces --if-present",
+    "test:unit": "npm run test:unit --workspaces --if-present",
+    "start": "npm run portal:start",
+    "test:init": "npm run portal:test:init",
     "test:playwright": "NODE_ENV=test playwright test --trace on --max-failures=1",
     "test:typescript-migration": "node src/ts-migration.js",
     "db:cmd": "node ./node_modules/knex/bin/cli.js",
     "db:migrate": "npm run db:cmd -- migrate:latest",
     "db:rollback": "npm run db:cmd -- migrate:rollback",
-    "db:seed": "npm run db:cmd -- seed:run"
+    "db:seed": "npm run db:cmd -- seed:run",
+    "portal:start": "npm run start --workspace portal",
+    "portal:build": "npm run build --workspace portal",
+    "portal:lint": "npm run lint --workspace portal",
+    "portal:check": "npm run check --workspace portal",
+    "portal:test:unit": "npm run test:unit --workspace portal",
+    "portal:test:init": "npm run test:init --workspace portal",
+    "worker:start": "npm run start --workspace worker",
+    "worker:build": "npm run build --workspace worker",
+    "worker:lint": "npm run lint --workspace worker",
+    "worker:check": "npm run check --workspace worker",
+    "worker:test:unit": "npm run test:unit --workspace worker"
   },
   "dependencies": {
-    "express": "^5.2.1",
     "knex": "^3.3.0",
     "pg": "^8.23.0"
   },

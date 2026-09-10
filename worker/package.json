@@ -1,0 +1,16 @@
+{
+  "name": "hello-world-worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "tsc --noEmit -p tsconfig.json",
+    "check": "tsc --noEmit -p tsconfig.json",
+    "test:unit": "npm run build && node --test dist/test/index.test.js",
+    "start": "node dist/src/index.js"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.5",
+    "typescript": "npm:@typescript/typescript6@^6.0.2"
+  }
+}

@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    branches: ['main']
+    branches: ['main', 'chore/test-monorepo']
 
 jobs:
   static-checks-npm:
@@ -41,31 +41,53 @@ jobs:
     permissions:
       contents: read
 
-  build-docker:
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@bug/investigate_merge_manifest_failure
+  build-docker-portal:
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@feat/monorepo-releases
     needs: [static-checks-npm, tests-npm, tests-e2e-npm, migration-checks-npm, migration-checks-poetry]
     permissions:
       contents: read
       packages: write
       security-events: write
     with:
-      scan_container: false
-      push_dockerhub: false
-      push_ghcr: true
+      docker_file: portal/Dockerfile
+      image_name: hello-world-portal
     secrets:
       DOCKERHUB_TOKEN: ${{ secrets.SQNC_DOCKERHUB_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.SQNC_DOCKERHUB_USERNAME }}
 
-  generate-sbom-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@main
+  build-docker-worker:
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@feat/monorepo-releases
+    needs: [static-checks-npm, tests-npm, tests-e2e-npm, migration-checks-npm, migration-checks-poetry]
+    permissions:
+      contents: read
+      packages: write
+      security-events: write
+    with:
+      docker_file: worker/Dockerfile
+      image_name: hello-world-worker
+    secrets:
+      DOCKERHUB_TOKEN: ${{ secrets.SQNC_DOCKERHUB_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.SQNC_DOCKERHUB_USERNAME }}
+
+  generate-sbom-portal:
+    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@feat/monorepo-releases
     permissions: {}
-    needs: [build-docker]
+    needs: [build-docker-portal]
+    with:
+      sbom_output_file: hello-world-portal.cdx.json
+
+  generate-sbom-worker:
+    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@feat/monorepo-releases
+    permissions: {}
+    needs: [build-docker-worker]
+    with:
+      sbom_output_file: hello-world-worker.cdx.json
 
   release-github:
-    uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@feat/monorepo-releases
     permissions:
       contents: write
       pull-requests: read
-    needs: [build-docker, generate-sbom-npm]
+    needs: [build-docker-portal, build-docker-worker, generate-sbom-portal, generate-sbom-worker]
     with:
       get_sbom: true

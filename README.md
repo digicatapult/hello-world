@@ -1,13 +1,15 @@
 # Hello world
 
-This repository intentionally contains **two** minimal “hello world” services so we can validate reusable workflows for both ecosystems:
+This repository contains two npm workspaces and a Poetry service so we can validate reusable workflows for multiple images and ecosystems:
 
-- **NPM (Node/Express)**: `src/index.js` (port `3000`)
+- **Portal (Node/Express)**: `portal/src/index.js` (port `3000`)
+- **Worker (Node/TypeScript)**: `worker/src/index.ts` (exits successfully)
 - **Poetry (Python/FastAPI)**: `hello_world/` + `index.py` (port `3001`)
 
 ## Docker
 
-- `Dockerfile` builds the **NPM** service image (default)
+- `portal/Dockerfile` builds the **Portal** service image
+- `worker/Dockerfile` builds the **Worker** image
 - `Dockerfile.poetry` builds the **Poetry** service image
 
 ## E2E tests
