@@ -52,6 +52,7 @@ jobs:
       docker_file: portal/Dockerfile
       image_name: hello-world-portal
       scan_container: true
+      push_ghcr: true
     secrets:
       DOCKERHUB_TOKEN: ${{ secrets.SQNC_DOCKERHUB_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.SQNC_DOCKERHUB_USERNAME }}
@@ -67,6 +68,7 @@ jobs:
       docker_file: worker/Dockerfile
       image_name: hello-world-worker
       scan_container: true
+      push_ghcr: true
     secrets:
       DOCKERHUB_TOKEN: ${{ secrets.SQNC_DOCKERHUB_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.SQNC_DOCKERHUB_USERNAME }}
