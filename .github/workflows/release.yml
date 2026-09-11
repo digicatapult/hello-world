@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    branches: ['main', 'chore/test-monorepo']
+    branches: ["main", "chore/test-monorepo"]
 
 jobs:
   static-checks-npm:
@@ -17,24 +17,24 @@ jobs:
     permissions:
       pull-requests: write
     with:
-      docker_compose_file: ''
-      npm_build_command: 'npm run start'
+      docker_compose_file: ""
+      npm_build_command: "npm run start"
       tests: '["test:init"]'
 
   tests-e2e-npm:
     uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@main
     permissions: {}
     with:
-      docker_compose_file: ''
-      pre_test_command: 'npm ci && npx playwright install-deps && npx playwright install'
-      test_command: 'E2E_TARGET=node npm run test:playwright || exit 1'
+      docker_compose_file: ""
+      pre_test_command: "npm ci && npx playwright install-deps && npx playwright install"
+      test_command: "E2E_TARGET=node npm run test:playwright || exit 1"
 
   migration-checks-npm:
     uses: digicatapult/shared-workflows/.github/workflows/migration-checks-npm.yml@ENG-313-migration-checks
     permissions:
       contents: read
     with:
-      seed_command: 'npm run db:seed'
+      seed_command: "npm run db:seed"
 
   migration-checks-poetry:
     uses: digicatapult/shared-workflows/.github/workflows/migration-checks-poetry.yml@ENG-313-migration-checks
@@ -43,7 +43,14 @@ jobs:
 
   build-docker-portal:
     uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@feat/monorepo-releases
-    needs: [static-checks-npm, tests-npm, tests-e2e-npm, migration-checks-npm, migration-checks-poetry]
+    needs:
+      [
+        static-checks-npm,
+        tests-npm,
+        tests-e2e-npm,
+        migration-checks-npm,
+        migration-checks-poetry,
+      ]
     permissions:
       contents: read
       packages: write
@@ -59,7 +66,14 @@ jobs:
 
   build-docker-worker:
     uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@feat/monorepo-releases
-    needs: [static-checks-npm, tests-npm, tests-e2e-npm, migration-checks-npm, migration-checks-poetry]
+    needs:
+      [
+        static-checks-npm,
+        tests-npm,
+        tests-e2e-npm,
+        migration-checks-npm,
+        migration-checks-poetry,
+      ]
     permissions:
       contents: read
       packages: write
@@ -81,11 +95,11 @@ jobs:
       sbom_output_file: hello-world-portal.cdx.json
       enable_check_version: true
       enable_dtrack_project: true
+      dtrack_project_name: hello-world-portal
     secrets:
       DTRACK_APIKEY: ${{ secrets.DTRACK_APIKEY }}
       DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
       DTRACK_PARENT_GUID: ${{ secrets.DTRACK_PARENT_GUID }}
-
 
   generate-sbom-worker:
     uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@feat/monorepo-releases
@@ -95,6 +109,7 @@ jobs:
       sbom_output_file: hello-world-worker.cdx.json
       enable_check_version: true
       enable_dtrack_project: true
+      dtrack_project_name: hello-world-worker
     secrets:
       DTRACK_APIKEY: ${{ secrets.DTRACK_APIKEY }}
       DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
@@ -105,6 +120,12 @@ jobs:
     permissions:
       contents: write
       pull-requests: read
-    needs: [build-docker-portal, build-docker-worker, generate-sbom-portal, generate-sbom-worker]
+    needs:
+      [
+        build-docker-portal,
+        build-docker-worker,
+        generate-sbom-portal,
+        generate-sbom-worker,
+      ]
     with:
       get_sbom: true
