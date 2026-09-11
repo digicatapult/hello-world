@@ -79,6 +79,11 @@ jobs:
     needs: [build-docker-portal]
     with:
       sbom_output_file: hello-world-portal.cdx.json
+      enable_dtrack_project: true
+    secrets:
+      DTRACK_APIKEY: ${{ secrets.DTRACK_APIKEY }}
+      DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
+
 
   generate-sbom-worker:
     uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@feat/monorepo-releases
@@ -86,6 +91,10 @@ jobs:
     needs: [build-docker-worker]
     with:
       sbom_output_file: hello-world-worker.cdx.json
+      enable_dtrack_project: true
+    secrets:
+      DTRACK_APIKEY: ${{ secrets.DTRACK_APIKEY }}
+      DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
 
   release-github:
     uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@feat/monorepo-releases
