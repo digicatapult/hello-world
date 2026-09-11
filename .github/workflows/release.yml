@@ -41,7 +41,7 @@ jobs:
     permissions:
       contents: read
 
-  build-docker-portal:
+  build-docker:
     uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@feat/monorepo-releases
     needs:
       [
@@ -64,56 +64,13 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.SQNC_DOCKERHUB_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.SQNC_DOCKERHUB_USERNAME }}
 
-  build-docker-worker:
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@feat/monorepo-releases
-    needs:
-      [
-        static-checks-npm,
-        tests-npm,
-        tests-e2e-npm,
-        migration-checks-npm,
-        migration-checks-poetry,
-      ]
-    permissions:
-      contents: read
-      packages: write
-      security-events: write
-    with:
-      docker_file: worker/Dockerfile
-      image_name: hello-world-worker
-      scan_container: true
-      push_ghcr: true
-    secrets:
-      DOCKERHUB_TOKEN: ${{ secrets.SQNC_DOCKERHUB_TOKEN }}
-      DOCKERHUB_USERNAME: ${{ secrets.SQNC_DOCKERHUB_USERNAME }}
-
   generate-sbom-portal:
     uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@feat/monorepo-releases
     permissions: {}
-    needs: [build-docker-portal]
+    needs: [build-docker]
     with:
       sbom_output_file: hello-world-portal.cdx.json
       enable_check_version: true
-      enable_dtrack_project: true
-      dtrack_project_name: hello-world-portal
-    secrets:
-      DTRACK_APIKEY: ${{ secrets.DTRACK_APIKEY }}
-      DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
-      DTRACK_PARENT_GUID: ${{ secrets.DTRACK_PARENT_GUID }}
-
-  generate-sbom-worker:
-    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@feat/monorepo-releases
-    permissions: {}
-    needs: [build-docker-worker]
-    with:
-      sbom_output_file: hello-world-worker.cdx.json
-      enable_check_version: true
-      enable_dtrack_project: true
-      dtrack_project_name: hello-world-worker
-    secrets:
-      DTRACK_APIKEY: ${{ secrets.DTRACK_APIKEY }}
-      DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
-      DTRACK_PARENT_GUID: ${{ secrets.DTRACK_PARENT_GUID }}
 
   release-github:
     uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@feat/monorepo-releases
@@ -122,10 +79,8 @@ jobs:
       pull-requests: read
     needs:
       [
-        build-docker-portal,
-        build-docker-worker,
+        build-docker,
         generate-sbom-portal,
-        generate-sbom-worker,
       ]
     with:
       get_sbom: true
