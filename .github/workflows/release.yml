@@ -57,7 +57,7 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.SQNC_DOCKERHUB_USERNAME }}
 
   generate-sbom-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@chore/replace_deprecated_sbom_inputs
     permissions: {}
     needs: [build-docker]
 
