@@ -90,6 +90,8 @@ jobs:
       packages: write
       security-events: write
       id-token: write
+      attestations: write
+      artifact-metadata: write
     with:
       docker_file: Dockerfile
       scan_container: true
@@ -102,6 +104,9 @@ jobs:
       contents: read
       packages: write
       security-events: write
+      id-token: write
+      attestations: write
+      artifact-metadata: write
     with:
       docker_file: Dockerfile.poetry
       scan_container: true
