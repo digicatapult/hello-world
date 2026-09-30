@@ -6,14 +6,14 @@ on:
 
 jobs:
   static-checks-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@feature/upload_artifacts_as_release_assets
     permissions:
       security-events: write
     with:
       matrix_commands: '["start"]'
 
   tests-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@feature/upload_artifacts_as_release_assets
     permissions:
       pull-requests: write
     with:
@@ -22,7 +22,7 @@ jobs:
       tests: '["test:init"]'
 
   tests-e2e-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@feature/upload_artifacts_as_release_assets
     permissions: {}
     with:
       docker_compose_file: ''
@@ -49,23 +49,29 @@ jobs:
       packages: write
       security-events: write
     with:
-      scan_container: false
+      scan_container: true
       push_dockerhub: false
       push_ghcr: true
+      attest_provenance: true
     secrets:
       DOCKERHUB_TOKEN: ${{ secrets.SQNC_DOCKERHUB_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.SQNC_DOCKERHUB_USERNAME }}
 
   generate-sbom-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@feature/upload_artifacts_as_release_assets
     permissions: {}
     needs: [build-docker]
+    with:
+      attest_provenance: true
 
   release-github:
-    uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@main
+    uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@feature/upload_artifacts_as_release_assets
     permissions:
       contents: write
       pull-requests: read
     needs: [build-docker, generate-sbom-npm]
     with:
       get_sbom: true
+      additional_release_artifact_patterns: |
+        "{*-trivy-container-report}"
+
