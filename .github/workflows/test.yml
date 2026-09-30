@@ -89,6 +89,7 @@ jobs:
       contents: read
       packages: write
       security-events: write
+      id-token: write
     with:
       docker_file: Dockerfile
       scan_container: true

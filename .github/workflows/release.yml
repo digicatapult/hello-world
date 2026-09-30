@@ -48,6 +48,7 @@ jobs:
       contents: read
       packages: write
       security-events: write
+      id-token: write
     with:
       scan_container: true
       push_dockerhub: false
@@ -74,4 +75,3 @@ jobs:
       get_sbom: true
       additional_release_artifact_patterns: |
         "{*-trivy-container-report}"
-
