@@ -78,5 +78,4 @@ jobs:
     needs: [build-docker, generate-sbom-npm]
     with:
       get_sbom: true
-      additional_release_artifact_patterns: |
-        "{*-trivy-container-report}"
+      additional_release_artifact_patterns: '*-trivy-container-report'
