@@ -89,9 +89,6 @@ jobs:
       contents: read
       packages: write
       security-events: write
-      id-token: write
-      attestations: write
-      artifact-metadata: write
     with:
       docker_file: Dockerfile
       scan_container: true
@@ -114,7 +111,6 @@ jobs:
 
   generate-sbom-npm:
     uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@feature/upload_artifacts_as_release_assets
-    permissions: {}
     needs: [build-docker-npm]
     with:
       enable_check_version: true
@@ -128,7 +124,6 @@ jobs:
 
   generate-sbom-poetry:
     uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@feature/upload_artifacts_as_release_assets
-    permissions: {}
     needs: [build-docker-poetry]
     with:
       package_manager: poetry

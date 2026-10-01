@@ -48,9 +48,6 @@ jobs:
       contents: read
       packages: write
       security-events: write
-      id-token: write
-      attestations: write
-      artifact-metadata: write
     with:
       scan_container: true
       push_dockerhub: false
@@ -62,7 +59,6 @@ jobs:
 
   generate-sbom-npm:
     uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@feature/upload_artifacts_as_release_assets
-    permissions: {}
     needs: [build-docker]
     with:
       attest_provenance: true
