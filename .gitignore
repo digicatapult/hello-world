@@ -12,6 +12,7 @@ __pycache__/
 # Workstation
 **/.DS_Store
 .vscode/*
+.devcontainer
 
 # Playwright
 /test-results/

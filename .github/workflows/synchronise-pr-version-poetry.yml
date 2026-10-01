@@ -1,4 +1,4 @@
-name: Synchronise Version
+name: Synchronise Poetry Version
 
 on:
   pull_request:
@@ -9,8 +9,8 @@ permissions:
   pull-requests: write
 
 jobs:
-  synchronise-pr-version-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/synchronise-pr-version-npm.yml@chore/test_ubuntu_2604_migration
+  synchronise-pr-version-poetry:
+    uses: digicatapult/shared-workflows/.github/workflows/synchronise-pr-version-poetry.yml@chore/test_ubuntu_2604_migration
     with:
       pr-number: ${{ github.event.pull_request.number }}
       trunk-branch: 'main'

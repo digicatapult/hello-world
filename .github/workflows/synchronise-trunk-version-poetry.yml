@@ -1,4 +1,4 @@
-name: Synchronise all PR versions
+name: Synchronise all PR Poetry versions
 
 on:
   push:
@@ -9,8 +9,8 @@ permissions:
   pull-requests: write
 
 jobs:
-  synchronise-trunk-version-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/synchronise-trunk-version-npm.yml@chore/test_ubuntu_2604_migration
+  synchronise-trunk-version-poetry:
+    uses: digicatapult/shared-workflows/.github/workflows/synchronise-trunk-version-poetry.yml@chore/test_ubuntu_2604_migration
     with:
       trunk-branch: "main"
     secrets:
