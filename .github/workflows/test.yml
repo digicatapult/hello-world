@@ -135,17 +135,14 @@ jobs:
       DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
       DTRACK_PARENT_GUID: ${{ secrets.DTRACK_PARENT_GUID }}
 
-  generate-security-scorecard:
-    uses: digicatapult/shared-workflows/.github/workflows/generate-security-scorecard.yml@chore/test_ubuntu_2604_migration
+  scan-zap:
+    uses: digicatapult/shared-workflows/.github/workflows/scan-zap.yml@chore/test_ubuntu_2604_migration
     permissions:
-      security-events: write
-      id-token: write
       contents: read
-      actions: read
-      pull-requests: read
     with:
-      upload_type: "sarif"
-      publish_results: false
+      docker_name: "ghcr.io/zaproxy/zaproxy:2.17.0"
+      matrix_scans: '["baseline" "api"]'
+      target: "http://localhost:3000"
 
   scan-vulns:
     uses: digicatapult/shared-workflows/.github/workflows/scan-vulns.yml@chore/test_ubuntu_2604_migration
