@@ -1,6 +1,6 @@
 {
   "name": "hello-world",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "A minimally-useful NPM package",
   "homepage": "https://github.com/digicatapult/hello-world#readme",
   "bugs": {
@@ -27,7 +27,7 @@
   "dependencies": {
     "express": "^5.2.1",
     "knex": "^3.3.0",
-    "pg": "^8.23.0"
+    "pg": "^8.23.1"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",
