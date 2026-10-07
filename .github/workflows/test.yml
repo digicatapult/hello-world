@@ -157,21 +157,6 @@ jobs:
     with:
       subject-artifact-name: ${{ github.event.repository.name }}-poetry.cdx.json
 
-  attest-images:
-    needs: [build-docker-npm, build-docker-poetry, attest-sbom-npm, attest-sbom-poetry]
-    permissions:
-      id-token: write
-      attestations: write
-      artifact-metadata: write
-      actions: read
-    uses: digicatapult/shared-workflows/.github/workflows/attest.yml@feature/upload_artifacts_as_release_assets
-    with:
-      image-matrix: |
-        hello-world-npm
-        hello-world-poetry
-      predicate-matrix: |
-        sbom
-
   stage-release-assets:
     needs: [build-docker-npm, build-docker-poetry, generate-sbom-npm, generate-sbom-poetry]
     permissions:
