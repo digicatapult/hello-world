@@ -48,14 +48,10 @@ jobs:
       contents: read
       packages: write
       security-events: write
-      id-token: write
-      attestations: write
-      artifact-metadata: write
     with:
       scan_container: true
       push_dockerhub: false
       push_ghcr: true
-      attest_provenance: true
     secrets:
       DOCKERHUB_TOKEN: ${{ secrets.SQNC_DOCKERHUB_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.SQNC_DOCKERHUB_USERNAME }}
@@ -63,19 +59,47 @@ jobs:
   generate-sbom-npm:
     uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@feature/upload_artifacts_as_release_assets
     needs: [build-docker]
+
+  attest-images:
+    needs: [build-docker, generate-sbom-npm]
     permissions:
       id-token: write
       attestations: write
       artifact-metadata: write
+      actions: read
+    uses: digicatapult/shared-workflows/.github/workflows/attest.yml@feature/upload_artifacts_as_release_assets
     with:
-      attest_provenance: true
+      image-matrix: hello-world
+      predicate-matrix: |
+        sbom
+        trivy
+
+  stage-release-assets:
+    needs: [build-docker, generate-sbom-npm]
+    permissions:
+      actions: read
+    uses: digicatapult/shared-workflows/.github/workflows/stage-release-assets.yml@feature/upload_artifacts_as_release_assets
+    with:
+      get_sbom: true
+      additional_release_artifact_patterns: "*-trivy-container-report"
+
+  attest-checksums:
+    needs: [stage-release-assets]
+    permissions:
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+      actions: read
+    uses: digicatapult/shared-workflows/.github/workflows/attest.yml@feature/upload_artifacts_as_release_assets
+    with:
+      subject-checksums-artifact-name: ${{ needs.stage-release-assets.outputs.artifact_name }}
 
   release-github:
     uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@feature/upload_artifacts_as_release_assets
     permissions:
       contents: write
       pull-requests: read
-    needs: [build-docker, generate-sbom-npm]
+      actions: read
+    needs: [stage-release-assets, attest-images, attest-checksums]
     with:
-      get_sbom: true
-      additional_release_artifact_patterns: '*-trivy-container-report'
+      release_assets_artifact_name: ${{ needs.stage-release-assets.outputs.artifact_name }}

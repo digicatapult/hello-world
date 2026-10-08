@@ -89,13 +89,10 @@ jobs:
       contents: read
       packages: write
       security-events: write
-      id-token: write
-      attestations: write
-      artifact-metadata: write
     with:
       docker_file: Dockerfile
-      scan_container: true
-      attest_provenance: true
+      image_name: hello-world-npm
+      scan_container: false
 
   build-docker-poetry:
     uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@feature/upload_artifacts_as_release_assets
@@ -104,38 +101,37 @@ jobs:
       contents: read
       packages: write
       security-events: write
-      id-token: write
-      attestations: write
-      artifact-metadata: write
     with:
       docker_file: Dockerfile.poetry
-      scan_container: true
-      attest_provenance: true
+      image_name: hello-world-poetry
+      scan_container: false
 
   generate-sbom-npm:
     uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@feature/upload_artifacts_as_release_assets
     needs: [build-docker-npm]
-    permissions:
-      id-token: write
-      attestations: write
-      artifact-metadata: write
     with:
       enable_check_version: true
       enable_dtrack_project: true
-      attest_provenance: true
       sbom_output_file: ${{ github.event.repository.name }}-npm.cdx.json
     secrets:
       DTRACK_APIKEY: ${{ secrets.DTRACK_APIKEY }}
       DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
       DTRACK_PARENT_GUID: ${{ secrets.DTRACK_PARENT_GUID }}
 
-  generate-sbom-poetry:
-    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@feature/upload_artifacts_as_release_assets
-    needs: [build-docker-poetry]
+  attest-sbom-npm:
+    needs: generate-sbom-npm
     permissions:
       id-token: write
       attestations: write
       artifact-metadata: write
+      actions: read
+    uses: digicatapult/shared-workflows/.github/workflows/attest.yml@feature/upload_artifacts_as_release_assets
+    with:
+      subject-artifact-name: ${{ github.event.repository.name }}-npm.cdx.json
+
+  generate-sbom-poetry:
+    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@feature/upload_artifacts_as_release_assets
+    needs: [build-docker-poetry]
     with:
       package_manager: poetry
       sbom_tool: "@cyclonedx/cdxgen"
@@ -149,3 +145,34 @@ jobs:
       DTRACK_APIKEY: ${{ secrets.DTRACK_APIKEY }}
       DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
       DTRACK_PARENT_GUID: ${{ secrets.DTRACK_PARENT_GUID }}
+
+  attest-sbom-poetry:
+    needs: generate-sbom-poetry
+    permissions:
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+      actions: read
+    uses: digicatapult/shared-workflows/.github/workflows/attest.yml@feature/upload_artifacts_as_release_assets
+    with:
+      subject-artifact-name: ${{ github.event.repository.name }}-poetry.cdx.json
+
+  stage-release-assets:
+    needs: [build-docker-npm, build-docker-poetry, generate-sbom-npm, generate-sbom-poetry]
+    permissions:
+      actions: read
+    uses: digicatapult/shared-workflows/.github/workflows/stage-release-assets.yml@feature/upload_artifacts_as_release_assets
+    with:
+      get_sbom: true
+      expected_sbom_count: 2
+
+  attest-checksums:
+    needs: [stage-release-assets]
+    permissions:
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+      actions: read
+    uses: digicatapult/shared-workflows/.github/workflows/attest.yml@feature/upload_artifacts_as_release_assets
+    with:
+      subject-checksums-artifact-name: ${{ needs.stage-release-assets.outputs.artifact_name }}
