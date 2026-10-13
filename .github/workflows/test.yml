@@ -110,21 +110,9 @@ jobs:
     uses: digicatapult/shared-workflows/.github/workflows/scan-post-quantum-cryptography.yml@feature/add_post_quantum_scanners
     permissions:
       contents: read
-      packages: read
       security-events: write
     with:
       upload_type: artefact
-
-  generate-cbom-sarif:
-    uses: digicatapult/shared-workflows/.github/workflows/scan-post-quantum-cryptography.yml@feature/add_post_quantum_scanners
-    permissions:
-      contents: read
-      packages: read
-      security-events: write
-    with:
-      enable_codeql_inventory: true
-      codeql_languages: '["python"]'
-      upload_type: sarif
 
   generate-sbom-npm:
     uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@main
