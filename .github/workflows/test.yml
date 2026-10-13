@@ -110,7 +110,8 @@ jobs:
     uses: digicatapult/shared-workflows/.github/workflows/scan-post-quantum-cryptography.yml@feature/add_post_quantum_scanners
     permissions:
       contents: read
-      # security-events: write
+      packages: read
+      security-events: write
     with:
       upload_type: artefact
 
@@ -118,6 +119,8 @@ jobs:
     uses: digicatapult/shared-workflows/.github/workflows/scan-post-quantum-cryptography.yml@feature/add_post_quantum_scanners
     permissions:
       contents: read
+      packages: read
+      security-events: write
     with:
       enable_codeql_inventory: true
       codeql_languages: '["python"]'
