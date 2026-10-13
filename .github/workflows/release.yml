@@ -6,14 +6,14 @@ on:
 
 jobs:
   static-checks-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@feature/upload_artifacts_as_release_assets
+    uses: digicatapult/shared-workflows/.github/workflows/static-checks-npm.yml@main
     permissions:
       security-events: write
     with:
       matrix_commands: '["start"]'
 
   tests-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@feature/upload_artifacts_as_release_assets
+    uses: digicatapult/shared-workflows/.github/workflows/tests-npm.yml@main
     permissions:
       pull-requests: write
     with:
@@ -22,7 +22,7 @@ jobs:
       tests: '["test:init"]'
 
   tests-e2e-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@feature/upload_artifacts_as_release_assets
+    uses: digicatapult/shared-workflows/.github/workflows/tests-e2e-npm.yml@main
     permissions: {}
     with:
       docker_compose_file: ''
@@ -42,7 +42,7 @@ jobs:
       contents: read
 
   build-docker:
-    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@feature/upload_artifacts_as_release_assets
+    uses: digicatapult/shared-workflows/.github/workflows/build-docker.yml@main
     needs: [static-checks-npm, tests-npm, tests-e2e-npm, migration-checks-npm, migration-checks-poetry]
     permissions:
       contents: read
@@ -57,7 +57,7 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.SQNC_DOCKERHUB_USERNAME }}
 
   generate-sbom-npm:
-    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@feature/upload_artifacts_as_release_assets
+    uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@main
     needs: [build-docker]
 
   attest-images:
@@ -67,7 +67,7 @@ jobs:
       attestations: write
       artifact-metadata: write
       actions: read
-    uses: digicatapult/shared-workflows/.github/workflows/attest.yml@feature/upload_artifacts_as_release_assets
+    uses: digicatapult/shared-workflows/.github/workflows/attest.yml@main
     with:
       image-matrix: hello-world
       predicate-matrix: |
@@ -78,7 +78,7 @@ jobs:
     needs: [build-docker, generate-sbom-npm]
     permissions:
       actions: read
-    uses: digicatapult/shared-workflows/.github/workflows/stage-release-assets.yml@feature/upload_artifacts_as_release_assets
+    uses: digicatapult/shared-workflows/.github/workflows/stage-release-assets.yml@main
     with:
       get_sbom: true
       additional_release_artifact_patterns: "*-trivy-container-report"
@@ -90,12 +90,12 @@ jobs:
       attestations: write
       artifact-metadata: write
       actions: read
-    uses: digicatapult/shared-workflows/.github/workflows/attest.yml@feature/upload_artifacts_as_release_assets
+    uses: digicatapult/shared-workflows/.github/workflows/attest.yml@main
     with:
       subject-checksums-artifact-name: ${{ needs.stage-release-assets.outputs.artifact_name }}
 
   release-github:
-    uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@feature/upload_artifacts_as_release_assets
+    uses: digicatapult/shared-workflows/.github/workflows/release-github.yml@main
     permissions:
       contents: write
       pull-requests: read
