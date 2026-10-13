@@ -113,6 +113,7 @@ jobs:
       security-events: write
     with:
       upload_type: artefact
+      scan_baseline_file: ''
 
   generate-sbom-npm:
     uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@main
