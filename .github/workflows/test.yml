@@ -115,6 +115,15 @@ jobs:
       upload_type: artefact
       scan_baseline_file: ''
 
+  generate-cbom-sarif:
+    uses: digicatapult/shared-workflows/.github/workflows/scan-post-quantum-cryptography.yml@feature/add_post_quantum_scanners
+    permissions:
+      contents: read
+      security-events: write
+    with:
+      upload_type: sarif
+      scan_baseline_file: ''
+
   generate-sbom-npm:
     uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@main
     needs: [build-docker-npm]
