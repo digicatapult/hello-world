@@ -109,6 +109,7 @@ jobs:
   generate-cbom-artefacts:
     uses: digicatapult/shared-workflows/.github/workflows/scan-post-quantum-cryptography.yml@feature/add_post_quantum_scanners
     permissions:
+      actions: read
       contents: read
       security-events: write
     with:
@@ -118,11 +119,13 @@ jobs:
   generate-cbom-sarif:
     uses: digicatapult/shared-workflows/.github/workflows/scan-post-quantum-cryptography.yml@feature/add_post_quantum_scanners
     permissions:
+      actions: read
       contents: read
       security-events: write
     with:
       upload_type: sarif
       scan_baseline_file: ''
+      artifact_suffix: '-sarif'
 
   generate-sbom-npm:
     uses: digicatapult/shared-workflows/.github/workflows/generate-sbom.yml@main
