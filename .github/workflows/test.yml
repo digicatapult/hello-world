@@ -176,3 +176,46 @@ jobs:
     uses: digicatapult/shared-workflows/.github/workflows/attest.yml@feature/upload_artifacts_as_release_assets
     with:
       subject-checksums-artifact-name: ${{ needs.stage-release-assets.outputs.artifact_name }}
+
+  debug-dtrack-upload-npm:
+    needs: generate-sbom-npm
+    if: ${{ always() && needs.generate-sbom-npm.result != 'skipped' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+      - id: get-version
+        uses: digicatapult/check-version@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fail_on_same_version: false
+          package_manager: npm
+      - uses: actions/download-artifact@v8
+        with:
+          name: ${{ github.event.repository.name }}-npm.cdx.json
+      - name: Upload SBOM to Dependency-Track and log response
+        env:
+          BOM_FILE: ${{ github.event.repository.name }}-npm.cdx.json
+          DTRACK_APIKEY: ${{ secrets.DTRACK_APIKEY }}
+          DTRACK_HOSTNAME: ${{ secrets.DTRACK_HOSTNAME }}
+          DTRACK_PARENT_GUID: ${{ secrets.DTRACK_PARENT_GUID }}
+          PROJECT_NAME: ${{ github.event.repository.name }}
+          PROJECT_VERSION: ${{ steps.get-version.outputs.version }}
+        run: |
+          : "${DTRACK_PARENT_GUID:?DTRACK_PARENT_GUID secret is not set}"
+          http_status=$(curl -sS -o dtrack-response.txt -w '%{http_code}' \
+            -X POST "https://${DTRACK_HOSTNAME}/api/v1/bom" \
+            -H "X-API-Key: ${DTRACK_APIKEY}" \
+            -F "bom=@${BOM_FILE};filename=bom" \
+            -F "projectName=${PROJECT_NAME}" \
+            -F "projectVersion=${PROJECT_VERSION}" \
+            -F "projectTags=${PROJECT_VERSION}" \
+            -F "autoCreate=true" \
+            -F "isLatest=true" \
+            -F "parentUUID=${DTRACK_PARENT_GUID}")
+          echo "HTTP status: ${http_status}"
+          echo "Response body:"
+          cat dtrack-response.txt
+          echo
+          [[ "${http_status}" -lt 300 ]]
