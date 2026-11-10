@@ -178,8 +178,6 @@ jobs:
       subject-checksums-artifact-name: ${{ needs.stage-release-assets.outputs.artifact_name }}
 
   debug-dtrack-upload-npm:
-    needs: generate-sbom-npm
-    if: ${{ always() && needs.generate-sbom-npm.result != 'skipped' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -191,9 +189,15 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fail_on_same_version: false
           package_manager: npm
-      - uses: actions/download-artifact@v8
+      - uses: actions/setup-node@v7
         with:
-          name: ${{ github.event.repository.name }}-npm.cdx.json
+          node-version: 24.x
+      - name: Generate SBOM
+        env:
+          BOM_FILE: ${{ github.event.repository.name }}-npm.cdx.json
+        run: |
+          npm ci
+          npx @cyclonedx/cyclonedx-npm --output-file "${BOM_FILE}"
       - name: Upload SBOM to Dependency-Track and log response
         env:
           BOM_FILE: ${{ github.event.repository.name }}-npm.cdx.json
